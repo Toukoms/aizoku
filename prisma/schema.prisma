@@ -62,6 +62,7 @@ model VerificationToken {
 
 model Chat {
   id        String    @id @default(cuid())
+  title     String
   userId    String? // optional if anonymous
   messages  Message[]
   createdAt DateTime  @default(now())

@@ -1,16 +1,10 @@
 "use client"
 import React from 'react';
-import InputChat from "@/app/(root)/_components/input-chat";
+import InputChat from "@/components/input-chat";
 import {useSession} from "next-auth/react";
-import {useChatStore} from "@/store/chat.store";
-import Message from "@/components/message";
-import {TriangleAlert} from "lucide-react";
 
-const ChatSection = () => {
+const WelcomeSection = () => {
   const {data, status} = useSession();
-  const error = useChatStore((state) => state.error)
-  const loading = useChatStore((state) => state.loading)
-  const messages = useChatStore((state) => state.messages)
 
   if (status === "loading") return <div>Loading...</div>;
 
@@ -20,18 +14,7 @@ const ChatSection = () => {
         {status === "authenticated" && data
           ? (
             <div className="flex flex-col items-center gap-8">
-              {
-                messages && messages.length > 0
-                  ? <div className="w-full h-full overflow-y-auto flex flex-col gap-4">
-                    {messages.map((message, index) => (
-                      <Message key={index} {...message}/>
-                    ))}
-                    {loading && <p>Loading...</p>}
-                    {error && <p className={"text-xs text-destructive flex items-center gap-1"}><TriangleAlert
-                        size={12}/> {error}</p>}
-                  </div>
-                  : <WelcomeMessage userName={data.user?.name!}/>
-              }
+              <WelcomeMessage userName={data.user?.name!}/>
               <InputChat/>
             </div>
           ) : <WelcomeMessage/>}
@@ -55,4 +38,4 @@ const WelcomeMessage = ({userName}: { userName?: string }) => {
   )
 }
 
-export default ChatSection;
+export default WelcomeSection;

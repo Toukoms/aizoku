@@ -10,7 +10,7 @@ const Header = async () => {
     <header className="flex items-center justify-between border-b p-4 mb-4">
       <div className="flex items-center gap-2">
         <SidebarTrigger className={"cursor-pointer"}/>
-        <h1 className="font-bold text-primary text-xl">CSS-AI</h1>
+        <h1 className="font-bold text-primary text-2xl">AIZUKO</h1>
       </div>
       <nav className="flex items-center gap-4">
         {

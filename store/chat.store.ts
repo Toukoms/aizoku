@@ -1,5 +1,5 @@
 import {create} from 'zustand'
-import {sendMessages} from '@/actions/chat.action'
+import {askOllama} from '@/actions/chat.action'
 
 type ChatStore = {
   message: string
@@ -38,7 +38,7 @@ export const useChatStore = create<ChatStore>((set, get) => ({
     set({loading: true, error: null, messages: updatedMessages})
 
     try {
-      const result = await sendMessages(updatedMessages, newMessage)
+      const result = await askOllama(updatedMessages, newMessage)
       if (result.message?.content) {
         const assistantMessage: TMessage = {
           role: 'assistant',

@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CSS-AI | AI help enhancing component style",
+  title: "AIZUKO | AI help enhancing component style",
   description: "Generate style of your component from CSS-AI",
 };
 
