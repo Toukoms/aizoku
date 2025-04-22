@@ -1,4 +1,6 @@
 import {signIn} from "@/src/lib/auth"
+import {Button} from "@/components/ui/button";
+import {Github} from "lucide-react";
 
 export default function SignIn() {
   return (
@@ -8,7 +10,10 @@ export default function SignIn() {
         await signIn("github")
       }}
     >
-      <button type="submit">Signin with GitHub</button>
+      <Button type="submit">
+        <Github/>
+        Sign-in
+      </Button>
     </form>
   )
 }
