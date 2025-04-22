@@ -15,7 +15,7 @@ const InputChat = () => {
       e.preventDefault();
       await sendMessage()
     }} className={"w-5/6 mx-auto"}>
-      <Textarea name="message" placeholder={"Ask something"} className={"resize-none h-32"} value={message}
+      <Textarea name="message" placeholder={"Ask something"} className={"resize-none h-20"} value={message}
                 onChange={(e) => setMessage(e.target.value)}/>
       <div className={"flex items-center justify-between py-4 px-2"}>
         <Button variant={"ghost"}><Paperclip/></Button>
