@@ -1,6 +1,6 @@
 "use client"
 import React from 'react';
-import InputChat from "@/components/input-chat";
+import InputChat from "@/src/components/input-chat";
 import {useSession} from "next-auth/react";
 
 const WelcomeSection = () => {

@@ -1,4 +1,5 @@
 type TMessage = {
   role: 'user' | 'assistant'
-  content: string
+  content: string,
+  createdAt?: Date
 }

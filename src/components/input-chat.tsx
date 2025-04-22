@@ -1,20 +1,22 @@
 "use client"
 
 import React from 'react';
-import {Textarea} from "@/components/ui/textarea";
-import {Button} from "@/components/ui/button";
+import {Textarea} from "@/src/components/ui/textarea";
+import {Button} from "@/src/components/ui/button";
 import {CornerDownLeft, Paperclip} from "lucide-react";
-import {useChatStore} from "@/store/chat.store";
+import {useChatStore} from "@/src/store/chat.store";
 import {usePathname, useRouter} from "next/navigation";
-import {sendMessageOrCreateChat} from "@/actions/chat.action";
 import {cn} from "@/src/lib/utils";
+import {createChat} from "@/src/actions/chat.action";
+import {useSession} from "next-auth/react";
 
 const InputChat = () => {
   const message = useChatStore((state) => state.message)
   const setMessage = useChatStore((state) => state.setMessage)
-  const sendMessage = useChatStore((state) => state.sendMessage)
+  const setNewSending = useChatStore((state) => state.setNewSending)
   const router = useRouter()
   const pathname = usePathname()
+  const {data} = useSession();
 
   const chatIdFromUrl = pathname.startsWith('/chat/')
     ? pathname.split('/chat/')[1]
@@ -25,17 +27,16 @@ const InputChat = () => {
     if (message.length === 0) {
       throw new Error("Message can't be empty")
     }
-
-    const {chatId} = await sendMessageOrCreateChat({
-      chatId: chatIdFromUrl,
-      content: message,
-    })
-
     if (!chatIdFromUrl) {
-      router.push(`/chat/${chatId}`)
+      const chat = await createChat(data?.user?.id!)
+      const chatId = chat.id;
+      if (chatId) {
+        router.push(`/chat/${chatId}`)
+        setNewSending(true)
+      }
+    } else {
+    	setNewSending(true)
     }
-
-    setMessage('')
   }
 
   return (

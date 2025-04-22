@@ -1,8 +1,8 @@
 import {auth} from "@/src/lib/auth";
-import SignOut from "@/components/sign-out";
-import SignIn from "@/components/sign-in";
-import {ThemeBtn} from "@/components/theme-btn";
-import {SidebarTrigger} from "@/components/ui/sidebar";
+import SignOut from "@/src/components/sign-out";
+import SignIn from "@/src/components/sign-in";
+import {ThemeBtn} from "@/src/components/theme-btn";
+import {SidebarTrigger} from "@/src/components/ui/sidebar";
 
 const Header = async () => {
   const session = await auth()

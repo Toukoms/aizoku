@@ -1,8 +1,9 @@
 import React from 'react';
-import {SidebarInset, SidebarProvider} from "@/components/ui/sidebar";
-import {AppSidebar} from "@/components/app-sidebar";
-import Header from "@/layout/header";
-import Footer from "@/layout/footer";
+import {SidebarInset, SidebarProvider} from "@/src/components/ui/sidebar";
+import {AppSidebar} from "@/src/components/app-sidebar";
+import Header from "@/src/layout/header";
+import Footer from "@/src/layout/footer";
+import {Toaster} from "@/src/components/ui/sonner";
 
 const MainLayout = ({children}: { children: React.ReactNode }) => {
   return (
@@ -12,6 +13,7 @@ const MainLayout = ({children}: { children: React.ReactNode }) => {
         <div className="w-full h-full bg-muted mx-auto grid grid-rows-[auto_1fr_auto]">
           <Header/>
           {children}
+          <Toaster position={"top-center"}/>
           <Footer/>
         </div>
       </SidebarInset>
