@@ -1,10 +1,10 @@
 import type {Metadata} from "next";
 import {Geist, Geist_Mono} from "next/font/google";
 import "./globals.css";
-import Header from "@/layout/header";
 import React from "react";
 import {ThemeProvider} from "@/providers/theme-provider";
-import Footer from "@/layout/footer";
+import {SessionProvider} from "next-auth/react";
+import MainLayout from "@/layout/main";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -42,13 +42,9 @@ export default function RootLayout(
       enableSystem
       disableTransitionOnChange
     >
-      <main className="h-screen w-full">
-        <div className="max-w-7xl mx-auto grid grid-rows-[auto_1fr_auto] h-full">
-          <Header/>
-          {children}
-          <Footer/>
-        </div>
-      </main>
+      <SessionProvider>
+        <MainLayout>{children}</MainLayout>
+      </SessionProvider>
     </ThemeProvider>
     </body>
     </html>

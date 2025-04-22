@@ -1,9 +1,9 @@
-import Welcome from "@/app/(root)/_components/welcome";
+import ChatSection from "@/app/(root)/_components/chat-section";
 
 export default function Home() {
   return (
     <div>
-      <Welcome/>
+      <ChatSection/>
     </div>
   );
 }
