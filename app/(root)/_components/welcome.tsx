@@ -1,24 +1,28 @@
 import React from 'react';
 import {auth} from "@/src/lib/auth";
+import InputChat from "@/app/(root)/_components/input-chat";
 
 const Welcome = async () => {
   const session = await auth();
   return (
-    <div className="h-full flex flex-col items-center justify-center space-y-4">
-      <h1 className="text-4xl font-bold">
+    <div className="h-full flex flex-col items-center justify-center">
+      <div className="max-w-3xl w-full px-2">
         {session?.user ? (
-          <span>Welcome back, {session.user.name}! 👋</span>
+          <div className="flex flex-col items-center gap-8">
+            <div className="flex flex-col items-center">
+              <p className="text-5xl font-semibold">Welcome back, <span
+                className="font-bold text-primary">{session.user.name}</span>! 👋</p>
+              <p className="text-lg text-muted">Great to see you again</p>
+            </div>
+            <InputChat/>
+          </div>
         ) : (
-          <span>Welcome to our platform! 👋</span>
+          <div className="flex flex-col items-center gap-2">
+            <p className="text-5xl font-semibold">Welcome to our platform! 👋</p>
+            <p className="text-lg text-muted">Please sign in to get started</p>
+          </div>
         )}
-      </h1>
-      <p className="text-lg text-gray-600">
-        {session?.user ? (
-          "Great to see you again"
-        ) : (
-          "Please sign in to get started"
-        )}
-      </p>
+      </div>
     </div>
   );
 };
