@@ -1,9 +1,9 @@
-import Welcome from "@/app/(root)/_components/welcome";
+import WelcomeSection from "@/app/(root)/_components/welcome-section";
 
 export default function Home() {
   return (
     <div>
-      <Welcome/>
+      <WelcomeSection/>
     </div>
   );
 }

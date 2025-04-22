@@ -59,3 +59,20 @@ model VerificationToken {
   @@unique([identifier, token])
   @@map("verification_tokens")
 }
+
+model Chat {
+  id        String    @id @default(cuid())
+  title     String
+  userId    String? // optional if anonymous
+  messages  Message[]
+  createdAt DateTime  @default(now())
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  chatId    String
+  chat      Chat     @relation(fields: [chatId], references: [id])
+  role      String // 'user' or 'assistant'
+  content   String
+  createdAt DateTime @default(now())
+}

@@ -1,5 +1,5 @@
 import {signIn} from "@/src/lib/auth"
-import {Button} from "@/components/ui/button";
+import {Button} from "@/src/components/ui/button";
 import {Github} from "lucide-react";
 
 export default function SignIn() {

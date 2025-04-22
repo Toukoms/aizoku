@@ -1,32 +1,66 @@
-# 🧠 AI Component Builder: CSS-AI (Work in Progress)
+# 🧠 Aizoku — Your Offline AI Companion
 
-This project aims to build a local AI-powered chatbot that helps developers generate modern **HTML + TailwindCSS +
-JavaScript** components using open-source LLMs via [Ollama](https://ollama.com/).
+**Aizoku** is a local-first AI assistant built for **everyone**.  
+It’s privacy-friendly, offline-ready, and model-flexible — powered by [Ollama](https://ollama.com/).
 
-> 💡 The goal is to make UI prototyping easier, faster, and offline – no paid API needed.
-
----
-
-## 🧭 Project Status
-
-This is a personal learning and portfolio project, still in early development.
-
-### ✅ What’s done so far:
-
-- Initialized a Next.js 15 project with the App Router and TypeScript
-- Set up TailwindCSS
-- Connecting a PostgreSQL database using **Prisma**
-- Installed and configured **NextAuth** (authentication system)
-
-### 🔧 In progress:
-
-- Preparing the base UI for the chat interface
-- Testing local LLMs with Ollama
+> _"Aizoku" comes from the fusion of "AI" and "Zoku" (族), meaning "clan" or "tribe" in Japanese — because you're never
+alone when Aizoku is with you._
 
 ---
 
-## 🧪 Dev Note
+## 🚀 Features
 
-- `Tue Apr 22 11:33` : This is a solo project with no budget. I'm learning as I build – everything is coded from
-  scratch, tested locally, and gradually improved.
+- ✅ **Offline by default** – No internet? No problem.
+- 🎯 **Model selector** – Choose your favorite Ollama-supported model.
+- 💬 **Conversational interface** – Chat like you're talking to a friend.
+- 🛡️ **100% local** – Your data stays on your machine.
+- 🧩 **Extensible** – Designed to support plugins and future features.
+- ❤️ **Built for everyone** – Simple, powerful, and inclusive.
+
+---
+
+## 🔧 How It Works
+
+Aizoku uses the [Ollama](https://ollama.com/) backend to run LLMs like `llama2`, `mistral`, or `gemma` directly on your
+machine.  
+No API keys, no hidden costs.
+
+---
+
+## 🛠️ Tech Stack
+
+- ⚛️ React (Next.js)
+- 🪄 TailwindCSS
+- 🧠 Ollama (local LLM backend)
+- 🗃️ Zustand (state management)
+- 🔐 Edge runtime-friendly
+
+---
+
+## 📦 Coming Soon
+
+- 🧠 Prompt memory
+- 🎨 Custom themes
+- 👥 Multi-user mode
+- 🌍 Multilingual support
+
+---
+
+## 💡 Vision
+
+> To create a free, local, accessible AI tool that empowers individuals  
+> — whether they're coding, learning, or just looking for a companion to talk to.
+
+---
+
+## 🧪 Development Status
+
+Aizoku is still in early development.  
+Follow the journey and contribute if you'd like to join the **clan**!
+
+---
+
+## 📜 License
+
+MIT — free to use, modify, and share.
 
