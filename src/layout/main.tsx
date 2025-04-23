@@ -10,7 +10,7 @@ const MainLayout = ({children}: { children: React.ReactNode }) => {
     <SidebarProvider>
       <AppSidebar/>
       <SidebarInset>
-        <div className="w-full h-full bg-muted mx-auto grid grid-rows-[auto_1fr_auto]">
+        <div className="w-full h-screen overflow-hidden bg-muted mx-auto grid grid-rows-[auto_1fr_auto]">
           <Header/>
           {children}
           <Toaster position={"top-center"}/>

@@ -10,13 +10,17 @@ import {cn} from "@/src/lib/utils";
 import {createChat} from "@/src/actions/chat.action";
 import {useSession} from "next-auth/react";
 
-const InputChat = () => {
+const InputChat = ({className}: { className?: string }) => {
   const message = useChatStore((state) => state.message)
+  const newSending = useChatStore((state) => state.newSending)
   const setMessage = useChatStore((state) => state.setMessage)
   const setNewSending = useChatStore((state) => state.setNewSending)
   const router = useRouter()
   const pathname = usePathname()
-  const {data} = useSession();
+  const {status, data} = useSession();
+
+  if (status === "loading") return <div>Loading...</div>;
+  if (status === "unauthenticated") return <div>You are not logged in</div>;
 
   const chatIdFromUrl = pathname.startsWith('/chat/')
     ? pathname.split('/chat/')[1]
@@ -28,27 +32,27 @@ const InputChat = () => {
       throw new Error("Message can't be empty")
     }
     if (!chatIdFromUrl) {
-      const chat = await createChat(data?.user?.id!)
+      const chat = await createChat(data?.user?.id || "")
       const chatId = chat.id;
       if (chatId) {
         router.push(`/chat/${chatId}`)
         setNewSending(true)
       }
     } else {
-    	setNewSending(true)
+      setNewSending(true)
     }
   }
 
   return (
-    <form onSubmit={handleSubmit} className={cn("mx-auto", {
+    <form onSubmit={handleSubmit} className={cn("mx-auto max-w-5xl bg-muted", {
       "w-5/6": !chatIdFromUrl,
       "w-full": chatIdFromUrl,
-    })}>
+    }, className)}>
       <Textarea name="message" placeholder={"Ask something"} className={"resize-none h-20"} value={message}
-                onChange={(e) => setMessage(e.target.value)}/>
-      <div className={"flex items-center justify-between py-4 px-2"}>
-        <Button type={"button"} variant={"ghost"}><Paperclip/></Button>
-        <Button type={"submit"} disabled={message.length === 0}>Send Message <CornerDownLeft/> </Button>
+                onChange={(e) => setMessage(e.target.value)} disabled={newSending}/>
+      <div className={"flex items-center justify-between pt-2 px-2"}>
+        <Button type={"button"} variant={"ghost"} disabled={message.length === 0 || newSending}><Paperclip/></Button>
+        <Button type={"submit"} disabled={message.length === 0 || newSending}>Send Message <CornerDownLeft/> </Button>
       </div>
     </form>
   );

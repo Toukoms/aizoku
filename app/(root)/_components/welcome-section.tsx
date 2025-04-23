@@ -14,7 +14,7 @@ const WelcomeSection = () => {
         {status === "authenticated" && data
           ? (
             <div className="flex flex-col items-center gap-8">
-              <WelcomeMessage userName={data.user?.name!}/>
+              <WelcomeMessage userName={data.user?.name || ''}/>
               <InputChat/>
             </div>
           ) : <WelcomeMessage/>}

@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@plugin "@tailwindcss/typography";
+
 @custom-variant dark (&:is(.dark *));
 
 :root {
@@ -124,6 +126,30 @@ body {
     }
 
     body {
-        @apply bg-background text-foreground;
+        @apply bg-background text-foreground overflow-x-hidden;
     }
+}
+
+.katex {
+  color: inherit;
+}
+
+.dark .katex {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+.prose pre {
+  overflow-x: auto;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background-color: #f3f4f6;
+}
+
+.dark .prose pre {
+  background-color: #1f2937;
+}
+
+.prose pre code {
+  word-break: normal;
+  white-space: pre;
 }
