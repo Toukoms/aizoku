@@ -45,7 +45,7 @@ export async function renameChat(chatId: string, messages: TMessage[]) {
   })
 }
 
-export async function createChat(userId: string) {
+export async function createChat(userId?: string) {
   return await prisma.chat.create({
     data: {
       title: "New chat",

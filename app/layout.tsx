@@ -1,24 +1,31 @@
+import React from "react"
 import type {Metadata} from "next";
-import {Geist, Geist_Mono} from "next/font/google";
-import "./globals.css";
-import React from "react";
-import {ThemeProvider} from "@/src/providers/theme-provider";
-import {SessionProvider} from "next-auth/react";
 import MainLayout from "@/src/layout/main";
+import "./globals.css";
+import "./custom.css"
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
-  title: "AIZUKO | AI help enhancing component style",
-  description: "Generate style of your component from CSS-AI",
+  title: "AIZUKO | Local chat AI with Ollama",
+  description: "Chat with AI everywhere, every time.",
+  icons: {
+    icon: "/favicon.ico",
+  },
+  metadataBase: new URL("https://aizuko.app"), // TODO: to change after deployement
+  openGraph: {
+    title: "AIZUKO",
+    description: "Chat with AI everywhere, every time.",
+    url: "https://aizuko.app", // TODO: to change after deployement
+    siteName: "AIZUKO",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "AIZUKO",
+    description: "Chat with AI everywhere, every time.",
+    creator: "@toki965",
+  },
 };
 
 export default function RootLayout(
@@ -34,18 +41,8 @@ export default function RootLayout(
       style={{colorScheme: "dark"}}
     >
     <body
-      className={`${geistSans.variable} ${geistMono.variable} antialiased`}
     >
-    <ThemeProvider
-      attribute="class"
-      defaultTheme="system"
-      enableSystem
-      disableTransitionOnChange
-    >
-      <SessionProvider>
-        <MainLayout>{children}</MainLayout>
-      </SessionProvider>
-    </ThemeProvider>
+    <MainLayout>{children}</MainLayout>
     </body>
     </html>
   );

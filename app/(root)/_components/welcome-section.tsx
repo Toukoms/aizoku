@@ -1,20 +1,18 @@
 "use client"
 import React from 'react';
 import InputChat from "@/src/components/input-chat";
-import {useSession} from "next-auth/react";
 
 const WelcomeSection = () => {
-  const {data, status} = useSession();
-
-  if (status === "loading") return <div>Loading...</div>;
+  // TODO: Implement a real auth
+  const data = "Login"
 
   return (
     <div className="h-full flex flex-col items-center justify-center">
       <div className="max-w-3xl w-full px-2">
-        {status === "authenticated" && data
+        {data
           ? (
             <div className="flex flex-col items-center gap-8">
-              <WelcomeMessage userName={data.user?.name || ''}/>
+              <WelcomeMessage userName={data}/>
               <InputChat/>
             </div>
           ) : <WelcomeMessage/>}

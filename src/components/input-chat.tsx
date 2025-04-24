@@ -8,7 +8,6 @@ import {useChatStore} from "@/src/store/chat.store";
 import {usePathname, useRouter} from "next/navigation";
 import {cn} from "@/src/lib/utils";
 import {createChat} from "@/src/actions/chat.action";
-import {useSession} from "next-auth/react";
 
 const InputChat = ({className}: { className?: string }) => {
   const message = useChatStore((state) => state.message)
@@ -17,10 +16,6 @@ const InputChat = ({className}: { className?: string }) => {
   const setNewSending = useChatStore((state) => state.setNewSending)
   const router = useRouter()
   const pathname = usePathname()
-  const {status, data} = useSession();
-
-  if (status === "loading") return <div>Loading...</div>;
-  if (status === "unauthenticated") return <div>You are not logged in</div>;
 
   const chatIdFromUrl = pathname.startsWith('/chat/')
     ? pathname.split('/chat/')[1]
@@ -32,7 +27,7 @@ const InputChat = ({className}: { className?: string }) => {
       throw new Error("Message can't be empty")
     }
     if (!chatIdFromUrl) {
-      const chat = await createChat(data?.user?.id || "")
+      const chat = await createChat()
       const chatId = chat.id;
       if (chatId) {
         router.push(`/chat/${chatId}`)
@@ -48,7 +43,7 @@ const InputChat = ({className}: { className?: string }) => {
       "w-5/6": !chatIdFromUrl,
       "w-full": chatIdFromUrl,
     }, className)}>
-      <Textarea name="message" placeholder={"Ask something"} className={"resize-none h-20"} value={message}
+      <Textarea name="message" placeholder={"Ask something"} className={"resize-none h-20 bg-accent"} value={message}
                 onChange={(e) => setMessage(e.target.value)} disabled={newSending}/>
       <div className={"flex items-center justify-between pt-2 px-2"}>
         <Button type={"button"} variant={"ghost"} disabled={message.length === 0 || newSending}><Paperclip/></Button>

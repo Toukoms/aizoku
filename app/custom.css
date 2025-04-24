@@ -1,0 +1,24 @@
+
+.katex {
+    color: inherit;
+}
+
+.dark .katex {
+    filter: invert(1) hue-rotate(180deg);
+}
+
+.prose pre {
+    overflow-x: auto;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    background-color: #f3f4f6;
+}
+
+.dark .prose pre {
+    background-color: #1f2937;
+}
+
+.prose pre code {
+    word-break: normal;
+    white-space: pre;
+}
