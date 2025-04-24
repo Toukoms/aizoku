@@ -91,7 +91,7 @@ export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
               {chatHistory && chatHistory.length > 0 && chatHistory.map((item) => (
                 <SidebarMenuItem key={item.id}>
                   <SidebarMenuButton asChild isActive={item.id === activePathname}>
-                    <Link href={`/chat/${item.id}`}
+                    <Link href={`/app/(chat)/chat/${item.id}`}
                           className={"overflow-ellipsis"}>{item.title}</Link>
                   </SidebarMenuButton>
                   <DropdownMenu>

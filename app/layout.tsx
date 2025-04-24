@@ -1,9 +1,7 @@
-import React from "react"
+import React from 'react';
 import type {Metadata} from "next";
-import MainLayout from "@/src/layout/main";
 import "./globals.css";
 import "./custom.css"
-
 
 export const metadata: Metadata = {
   title: "AIZUKO | Local chat AI with Ollama",
@@ -29,20 +27,21 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout(
-  {
-    children,
-  }: Readonly<{
+function RootLayout(
+  {children}: {
     children: React.ReactNode;
-  }>) {
+  }
+) {
   return (
     <html
       lang="en"
     >
     <body
     >
-    <MainLayout>{children}</MainLayout>
+    {children}
     </body>
     </html>
   );
 }
+
+export default RootLayout;

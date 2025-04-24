@@ -1,5 +1,5 @@
 import React from 'react';
-import Messages from "@/app/chat/[id]/_components/messages";
+import Messages from "@/app/(chat)/chat/[id]/_components/messages";
 import InputChat from "@/src/components/input-chat";
 import {notFound} from "next/navigation";
 
