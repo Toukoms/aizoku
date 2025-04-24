@@ -1,6 +1,13 @@
 import {create} from "zustand/react";
 import {subscribeWithSelector} from "zustand/middleware";
-import {getMessagesByChatId, renameChat, saveMessage, streamOllama} from "@/src/actions/chat.action";
+import {
+  getChatHistoryByUserId,
+  getMessagesByChatId,
+  renameChat,
+  saveMessage,
+  streamOllama
+} from "@/src/actions/chat.action";
+import {Chat} from "@/src/generated/prisma/client"
 
 type ChatStore = {
   chatId?: string;
@@ -9,7 +16,10 @@ type ChatStore = {
   messages: TMessage[];
   loading: boolean;
   error: string | null;
+  chatHistory: Chat[];
 
+  clearAll: () => void;
+  getChatHistory: (userId: string) => Promise<void>;
   setMessage: (msg: string) => void;
   setNewSending: (msgSent: boolean) => void;
   setChatId: (chatId: string) => void;
@@ -24,7 +34,13 @@ export const useChatStore = create<ChatStore>()(subscribeWithSelector((set, get)
   loading: false,
   error: null,
   newSending: false,
+  chatHistory: [],
 
+  clearAll: () => set({chatId: undefined, message: "", messages: [], loading: false, error: null, newSending: false}),
+  getChatHistory: async (userId: string) => {
+    const chats = await getChatHistoryByUserId("");
+    set({chatHistory: chats});
+  },
   setMessage: (msg) => set({message: msg}),
   setNewSending: (msgSent) => set({newSending: msgSent}),
   setChatId: (chatId: string) => set({chatId}),
@@ -35,7 +51,7 @@ export const useChatStore = create<ChatStore>()(subscribeWithSelector((set, get)
   },
 
   sendMessage: async () => {
-    const {chatId, message, messages} = get();
+    const {chatId, message, messages, getChatHistory} = get();
     const trimmed = message.trim();
     if (!trimmed) {
       set({error: "Message can't be empty."});
@@ -66,13 +82,14 @@ export const useChatStore = create<ChatStore>()(subscribeWithSelector((set, get)
       await saveMessage(chatId, trimmed, "user");
       await saveMessage(chatId, currentAiMessage, "assistant");
       set({message: ""});
-      
-      console.log("messages: ", messages)
-      console.log("updateMessages: ", updatedMessages)
 
       if (updatedMessages.length === 2) {
         const chat = await renameChat(chatId, updatedMessages);
-        console.log(chat);
+        if (chat) {
+          set({chatId: chat.id});
+          await getChatHistory("")
+        }
+
       }
     } catch (err: unknown) {
       set({
@@ -91,8 +108,8 @@ useChatStore.subscribe(
     if (chatId && chatId !== prevChatId) {
       useChatStore.getState().loadMessagesFromDb(chatId);
       if (useChatStore.getState().newSending) {
-      useChatStore.getState().sendMessage();
-    	}
+        useChatStore.getState().sendMessage();
+      }
     }
   }
 );

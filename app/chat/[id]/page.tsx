@@ -1,9 +1,14 @@
 import React from 'react';
 import Messages from "@/app/chat/[id]/_components/messages";
 import InputChat from "@/src/components/input-chat";
+import {notFound} from "next/navigation";
 
 const ChatPage = async ({params}: TParams) => {
   const {id} = await params;
+
+  if (!id) {
+    notFound()
+  }
 
   return (
     <div className="w-full max-h-[86vh] flex flex-col gap-4">

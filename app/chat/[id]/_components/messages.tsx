@@ -16,7 +16,7 @@ const Messages = ({chatId}: { chatId: string }) => {
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({behavior: "smooth"});
   };
-  const {theme} = useTheme()
+  const {resolvedTheme} = useTheme()
 
   useEffect(() => {
     if (error) {
@@ -44,7 +44,7 @@ const Messages = ({chatId}: { chatId: string }) => {
         ))}
         <div ref={messagesEndRef}/>
       </div>
-      {loading && <PuffLoader color={theme === "light" ? "black" : "white"} size={16}/>}
+      {loading && <PuffLoader color={resolvedTheme === "light" ? "black" : "white"} size={16}/>}
       {error && <p className={"text-sm text-destructive flex items-center gap-1 max-w-3/4"}><TriangleAlert
           size={16}/>{error}</p>}
     </div>

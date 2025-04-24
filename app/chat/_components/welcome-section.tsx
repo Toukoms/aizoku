@@ -4,7 +4,7 @@ import InputChat from "@/src/components/input-chat";
 
 const WelcomeSection = () => {
   // TODO: Implement a real auth
-  const data = "Login"
+  const data = "Toki"
 
   return (
     <div className="h-full flex flex-col items-center justify-center">

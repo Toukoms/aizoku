@@ -1,12 +1,11 @@
-"use client"
-
 import React from 'react';
 import {SidebarProvider} from "@/src/components/ui/sidebar";
-import {ThemeProvider} from "next-themes";
+import {ThemeProvider} from "@/src/providers/theme-provider";
 
 function Providers({children}: { children: React.ReactNode }) {
+
   return (
-    < ThemeProvider
+    <ThemeProvider
       attribute="class"
       defaultTheme="system"
       enableSystem

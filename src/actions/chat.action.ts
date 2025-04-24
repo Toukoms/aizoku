@@ -36,7 +36,6 @@ export async function renameChat(chatId: string, messages: TMessage[]) {
   };
 
   const res = await askOllama([...messages, prompt]);
-  console.log(res);
   const title = res.message.content;
 
   return await prisma.chat.update({
@@ -45,11 +44,12 @@ export async function renameChat(chatId: string, messages: TMessage[]) {
   })
 }
 
-export async function createChat(userId?: string) {
+export async function createChat(userId: string) {
   return await prisma.chat.create({
     data: {
       title: "New chat",
-      userId
+      userId,
+      model: 'qwen2.5-coder:3b',
     },
   });
 }
@@ -64,8 +64,9 @@ export async function saveMessage(chatId: string, content: string, role: "user" 
   })
 }
 
-export async function getChatHistory() {
+export async function getChatHistoryByUserId(userId: string) {
   return await prisma.chat.findMany({
+    where: {userId},
     orderBy: {createdAt: "desc"},
   });
 }

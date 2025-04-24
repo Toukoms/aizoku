@@ -11,13 +11,14 @@ import {
 } from "@/src/components/ui/dropdown-menu"
 import {SidebarMenu, SidebarMenuButton, SidebarMenuItem,} from "@/src/components/ui/sidebar"
 
-export function VersionSwitcher({
-                                  versions,
-                                  defaultVersion,
-                                }: {
-  versions: string[]
-  defaultVersion: string
-}) {
+export function VersionSwitcher(
+  {
+    versions,
+    defaultVersion,
+  }: {
+    versions: string[]
+    defaultVersion: string
+  }) {
   const [selectedVersion, setSelectedVersion] = React.useState(defaultVersion)
 
   return (
@@ -34,7 +35,7 @@ export function VersionSwitcher({
                 <GalleryVerticalEnd className="size-4"/>
               </div>
               <div className="flex flex-col gap-0.5 leading-none">
-                <span className="font-semibold">Documentation</span>
+                <span className="font-semibold">Models</span>
                 <span className="">v{selectedVersion}</span>
               </div>
               <ChevronsUpDown className="ml-auto"/>

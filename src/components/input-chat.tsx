@@ -14,6 +14,7 @@ const InputChat = ({className}: { className?: string }) => {
   const newSending = useChatStore((state) => state.newSending)
   const setMessage = useChatStore((state) => state.setMessage)
   const setNewSending = useChatStore((state) => state.setNewSending)
+  const getChatHistory = useChatStore((state) => state.getChatHistory)
   const router = useRouter()
   const pathname = usePathname()
 
@@ -27,9 +28,10 @@ const InputChat = ({className}: { className?: string }) => {
       throw new Error("Message can't be empty")
     }
     if (!chatIdFromUrl) {
-      const chat = await createChat()
+      const chat = await createChat("")
       const chatId = chat.id;
       if (chatId) {
+        getChatHistory("")
         router.push(`/chat/${chatId}`)
         setNewSending(true)
       }
