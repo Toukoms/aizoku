@@ -4,6 +4,7 @@ import {Card, CardContent, CardDescription, CardHeader, CardTitle,} from "@/src/
 import {Input} from "@/src/components/ui/input"
 import {Label} from "@/src/components/ui/label"
 import Link from "next/link";
+import PasswordInput from "@/src/components/password-input";
 
 export function LoginForm(
   {
@@ -41,7 +42,7 @@ export function LoginForm(
                     Forgot your password?
                   </Link>
                 </div>
-                <Input id="password" type="password" placeholder={"***"} required/>
+                <PasswordInput id="password" placeholder={"***"} required/>
               </div>
               <Button type="submit" className="w-full">
                 Login

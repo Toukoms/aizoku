@@ -5,6 +5,7 @@ import {Label} from "@/src/components/ui/label";
 import {Input} from "@/src/components/ui/input";
 import Link from "next/link";
 import {Button} from "@/src/components/ui/button";
+import PasswordInput from "@/src/components/password-input";
 
 function SingUpForm(
   {
@@ -43,7 +44,7 @@ function SingUpForm(
                     Forgot your password?
                   </Link>
                 </div>
-                <Input id="password" type="password" placeholder={"***"} required/>
+                <PasswordInput id="password" placeholder={"***"} required/>
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="email">Secret Question</Label>
