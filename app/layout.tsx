@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   icons: {
     icon: "/favicon.ico",
   },
+  authors: [{name: "Tokiniaina"}],
   metadataBase: new URL("https://aizuko.app"), // TODO: to change after deployement
   openGraph: {
     title: "AIZUKO",

@@ -7,15 +7,15 @@
 
 :root {
     --radius: 0.6rem;
-    --background: oklch(0.99 0.01 292);
+    --background: oklch(1 0 89.876);
     --foreground: oklch(0.18 0.03 292);
-    --muted: oklch(0.92 0.01 292);
+    --muted: oklch(0.957 0.008 286.248);
     --muted-foreground: oklch(0.42 0.02 292);
     --popover: oklch(0.99 0.01 292);
     --popover-foreground: oklch(0.18 0.03 292);
     --card: oklch(0.98 0 0);
     --card-foreground: oklch(0.15 0.03 292);
-    --border: oklch(0.94 0.005 292);
+    --border: oklch(0.901 0.029 313.343);
     --input: oklch(0.94 0.005 292);
     --primary: oklch(0.65 0.25 292);
     --primary-foreground: oklch(1 0 0);
@@ -50,8 +50,8 @@
     --popover-foreground: oklch(0.95 0.01 292);
     --card: oklch(0.12 0.01 292);
     --card-foreground: oklch(1 0 0);
-    --border: oklch(0.16 0.01 292);
-    --input: oklch(0.16 0.01 292);
+    --border: oklch(0.256 0.01 268.292 / 0.93);
+    --input: oklch(0.653 0 89.876 / 0.5);
     --primary: oklch(0.65 0.25 292);
     --primary-foreground: oklch(1 0 0);
     --secondary: oklch(0.2 0.01 292);
