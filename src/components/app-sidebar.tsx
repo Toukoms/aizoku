@@ -32,6 +32,8 @@ import {ChevronUp, Edit, KeyRound, MoreHorizontalIcon, Settings, Trash2, User2} 
 import {useIsMobile} from "@/src/hooks/use-mobile";
 import {useAuthStore} from "@/src/store/auth.store";
 import SignOut from "@/src/components/sign-out";
+import EditChat from "@/src/components/edit-chat";
+import DeleteChat from "@/src/components/delete-chat";
 
 const versions = ["1.0.1", "1.1.0-alpha", "2.0.0-beta1"]
 
@@ -119,13 +121,11 @@ export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
                                 side={isMobile ? "bottom" : "right"}
                                 align={isMobile ? "end" : "start"}
                               >
-                                <DropdownMenuItem>
-                                  <Edit/>
-                                  <span>Change title</span>
+                                <DropdownMenuItem asChild>
+                                  <EditChat/>
                                 </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                  <Trash2/>
-                                  <span>Delete</span>
+                                <DropdownMenuItem asChild>
+                                  <DeleteChat/>
                                 </DropdownMenuItem>
                               </DropdownMenuContent>
                             </DropdownMenu>

@@ -1,6 +1,8 @@
 import {create} from "zustand/react";
 import {subscribeWithSelector} from "zustand/middleware";
 import {
+  deleteChat,
+  generateChatTitle, getChatById,
   getChatHistoryByUserId,
   getMessagesByChatId,
   renameChat,
@@ -19,6 +21,7 @@ type ChatStore = {
   error: string | null;
   chatHistory: Chat[];
 
+  getChat: () => Promise<Chat|undefined>;
   clearAll: () => void;
   getChatHistory: () => Promise<void>;
   setMessage: (msg: string) => void;
@@ -26,6 +29,8 @@ type ChatStore = {
   setChatId: (chatId: string) => void;
   loadMessagesFromDb: (chatId: string) => Promise<void>;
   sendMessage: () => Promise<void>;
+  renameChat: (title: string) => Promise<void>;
+  deleteChat: () => Promise<void>;
 };
 
 export const useChatStore = create<ChatStore>()(subscribeWithSelector((set, get) => ({
@@ -37,6 +42,37 @@ export const useChatStore = create<ChatStore>()(subscribeWithSelector((set, get)
   newSending: false,
   chatHistory: [],
 
+  getChat: async () => {
+    try {
+      const {chatId} = get();
+      if (!chatId) throw new Error('Chat ID is not defined');
+      const chat = await getChatById(chatId);
+      if (!chat) throw new Error('Failed to get chat');
+      return chat;
+    } catch (error) {
+      set({error: (error as Error).message});
+    }
+  },
+  renameChat: async (title: string) => {
+    try {
+      const {getChatHistory,chatId} = get()
+      if (!chatId) throw new Error('Chat ID is not defined');
+      await renameChat(chatId, title);
+      await getChatHistory()
+    } catch (error) {
+      set({error: (error as Error).message});
+    }
+  },
+  deleteChat: async () => {
+    try {
+      const {clearAll, chatId} = get()
+      if (!chatId) throw new Error('Chat ID is not defined');
+      clearAll();
+      await deleteChat(chatId);
+    } catch (error) {
+      set({error: (error as Error).message});
+    }
+  },
   clearAll: () => set({chatId: undefined, message: "", messages: [], loading: false, error: null, newSending: false}),
   getChatHistory: async () => {
     const user = await getUserSession();
@@ -87,7 +123,7 @@ export const useChatStore = create<ChatStore>()(subscribeWithSelector((set, get)
       set({message: ""});
 
       if (updatedMessages.length === 2) {
-        const chat = await renameChat(chatId, updatedMessages);
+        const chat = await generateChatTitle(chatId, updatedMessages);
         if (chat) {
           set({chatId: chat.id});
           await getChatHistory()

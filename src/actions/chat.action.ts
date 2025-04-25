@@ -2,6 +2,7 @@
 
 import ollama from "ollama";
 import {prisma} from "@/src/lib/prisma";
+import {redirect} from "next/navigation";
 
 export async function askOllama(messages: TMessage[], maxLength?: number) {
   return await ollama.chat({
@@ -21,7 +22,7 @@ export async function streamOllama(messages: TMessage[]) {
   });
 }
 
-export async function renameChat(chatId: string, messages: TMessage[]) {
+export async function generateChatTitle(chatId: string, messages: TMessage[]) {
   const messageCount = await prisma.message.count({
     where: {chatId}
   });
@@ -38,14 +39,14 @@ export async function renameChat(chatId: string, messages: TMessage[]) {
   const res = await askOllama([...messages, prompt]);
   const title = res.message.content.replace("\"", "");
 
-  return await prisma.chat.update({
+  return prisma.chat.update({
     where: {id: chatId},
     data: {title}
-  })
+  });
 }
 
 export async function createChat(userId: string) {
-  return await prisma.chat.create({
+  return prisma.chat.create({
     data: {
       title: "New chat",
       userId,
@@ -54,25 +55,45 @@ export async function createChat(userId: string) {
   });
 }
 
+export async function getChatById(chatId: string) {
+  return prisma.chat.findUnique({
+    where: {id: chatId},
+  });
+}
+
+export async function renameChat(chatId: string, title: string) {
+  return prisma.chat.update({
+    where: {id: chatId},
+    data: {title}
+  });
+}
+
+export async function deleteChat(chatId: string) {
+  const chat = await prisma.chat.delete({where: {id: chatId}});
+  if (chat) {
+    redirect("/chat")
+  }
+}
+
 export async function saveMessage(chatId: string, content: string, role: "user" | "assistant") {
-  return await prisma.message.create({
+  return prisma.message.create({
     data: {
       chatId,
       content,
       role,
     },
-  })
+  });
 }
 
 export async function getChatHistoryByUserId(userId: string) {
-  return await prisma.chat.findMany({
+  return prisma.chat.findMany({
     where: {userId},
     orderBy: {createdAt: "desc"},
   });
 }
 
 export async function getMessagesByChatId(chatId: string) {
-  return await prisma.message.findMany({
+  return prisma.message.findMany({
     where: {chatId},
     orderBy: {createdAt: "asc"},
   });

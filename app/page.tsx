@@ -1,46 +1,33 @@
 import React from 'react';
-import Link from "next/link";
-import {Button} from "@/src/components/ui/button";
-import {ArrowRight} from "lucide-react";
+import Link from 'next/link';
 
-function LandingPage() {
+export default function Home() {
   return (
-    <div
-      className={"min-h-screen bg-gradient-to-br from-violet-950 to-black text-white px-6 py-12 flex flex-col items-center justify-center"}>
-      <section className="max-w-4xl text-center">
-        <h1 className="text-4xl md:text-6xl font-extrabold mb-6 leading-tight">
-          Welcome to <span className="text-violet-400">AIZOKU</span>
+    <main className="min-h-screen bg-gradient-to-br from-violet-900 to-black text-white flex flex-col items-center justify-center px-6 py-12">
+      <div className="text-center max-w-2xl">
+        <h1 className="text-5xl md:text-6xl font-extrabold leading-tight mb-6">
+          Meet <span className="text-violet-400">AIZOKU</span>
         </h1>
         <p className="text-lg md:text-xl text-gray-300 mb-8">
-          AIZOKU is an open-source offline AI chat platform, built with local-first privacy, flexibility, and
-          extensibility in mind.
-          Chat with powerful models like LLaMA or Qwen—right on your machine.
+          A powerful, offline AI chat platform. Built for privacy, performance, and creativity — all on your machine.
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link href="/chat">
-            <Button size="lg" className="bg-violet-600 hover:bg-violet-700">
-              Start new discussion <ArrowRight className="ml-2 w-5 h-5"/>
-            </Button>
+          <Link href="/chat" className="bg-violet-600 hover:bg-violet-700 text-white font-semibold px-6 py-3 rounded-xl transition">
+            Launch AIZOKU
           </Link>
           <Link
-            href="https://www.buymeacoffee.com/aizoku"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="/download"
+            className="bg-white text-violet-700 hover:text-white hover:bg-violet-500 font-semibold px-6 py-3 rounded-xl transition"
           >
-            <Button variant="outline" size="lg"
-                    className="border-white bg-transparent text-white hover:bg-white hover:text-black">
-              Faire un don
-            </Button>
+            Download AIZOKU
           </Link>
         </div>
-      </section>
 
-      <footer className="mt-20 text-sm text-gray-500">
-        © {new Date().getFullYear()} AIZOKU — Offline AI for Everyone
-      </footer>
-    </div>
+        <div className="mt-16 text-sm text-gray-500">
+          Made with 💜 using Next.js 15, Ollama, and Tailwind CSS.
+        </div>
+      </div>
+    </main>
   );
 }
-
-export default LandingPage;
