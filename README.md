@@ -8,59 +8,69 @@ alone when Aizoku is with you._
 
 ---
 
-## 🚀 Features
+## ✅ Features Implemented
 
-- ✅ **Offline by default** – No internet? No problem.
-- 🎯 **Model selector** – Choose your favorite Ollama-supported model.
-- 💬 **Conversational interface** – Chat like you're talking to a friend.
-- 🛡️ **100% local** – Your data stays on your machine.
-- 🧩 **Extensible** – Designed to support plugins and future features.
-- ❤️ **Built for everyone** – Simple, powerful, and inclusive.
+- 🔐 Login & Signup (with secret question & answer for future password reset)
+- 🧠 New chat creation with AI-generated titles
+- 🔁 Streaming chat
+- 📜 Chat history listing
+- 🚪 Logout functionality
 
----
+## 🛠️ Upcoming Features
 
-## 🔧 How It Works
+- 🗑️ Delete a chat
+- ⚙️ User settings
+- 📘 Installation guides
+- 🧠 Model selection (for now it is set `qwen2.5-coder:3b` by default)
+- 📋 Message copy/paste
+- 🎙️ Voice communication
+- ➕ Plugins, file upload, image generation, etc.
 
-Aizoku uses the [Ollama](https://ollama.com/) backend to run LLMs like `llama2`, `mistral`, or `gemma` directly on your
-machine.  
-No API keys, no hidden costs.
+## 🧰 Prerequisites
 
----
+- **Node.js** (v18+ recommended)
+- **pnpm** (or npm/yarn)
+- **Ollama** installed locally
+    - [https://ollama.com/download](https://ollama.com/download)
+- **PostgreSQL** database
 
-## 🛠️ Tech Stack
+## 🚀 Getting Started (Local Installation)
 
-- ⚛️ React (Next.js)
-- 🪄 TailwindCSS
-- 🧠 Ollama (local LLM backend)
-- 🗃️ Zustand (state management)
-- 🔐 Edge runtime-friendly
+1. **Clone the repo:**
+   ```bash
+   git clone https://github.com/toukoms/aizoku.git
+   cd aizoku
+   ```
 
----
+2. **Install dependencies:**
+   ```bash
+   pnpm install
+   ```
 
-## 📦 Coming Soon
+3. **Run the app:**
+   ```bash
+   pnpm dev
+   ```
 
-- 🧠 Prompt memory
-- 🎨 Custom themes
-- 👥 Multi-user mode
-- 🌍 Multilingual support
-
----
-
-## 💡 Vision
-
-> To create a free, local, accessible AI tool that empowers individuals  
-> — whether they're coding, learning, or just looking for a companion to talk to.
-
----
-
-## 🧪 Development Status
-
-Aizoku is still in early development.  
-Follow the journey and contribute if you'd like to join the **clan**!
+4. **Access your app:**
+   Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ---
 
-## 📜 License
+## ⚙️ Tech Stack
 
-MIT — free to use, modify, and share.
+- 🧱 Next.js (with **Server Actions**)
+- 💾 Prisma ORM + PostgreSQL
+- ⚛️ React (with **Zustand** for state management)
+- 🧾 React Markdown (for rendering messages)
+- 🧠 Ollama (local AI model management)
+
+---
+
+## 📄 Documentation
+
+Additional guides and contribution info:
+
+- [HELP.md](./HELP.md)
+- [CONTRIBUTION.md](./CONTRIBUTION.md)
 
