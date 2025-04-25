@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useState } from 'react';
+import React, {useEffect} from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkBreaks from 'remark-breaks';
@@ -11,7 +11,7 @@ import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import 'katex/dist/katex.min.css';
 import {cn} from "@/src/lib/utils";
-import { useTheme } from 'next-themes';
+import {useTheme} from 'next-themes';
 
 interface MarkdownGptProps {
   content: string;
@@ -19,7 +19,7 @@ interface MarkdownGptProps {
 }
 
 const MarkdownGpt: React.FC<MarkdownGptProps> = ({content, className}) => {
-  const { resolvedTheme } = useTheme();
+  const {resolvedTheme} = useTheme();
 
   useEffect(() => {
     if (!resolvedTheme) return;
@@ -44,7 +44,6 @@ const MarkdownGpt: React.FC<MarkdownGptProps> = ({content, className}) => {
       className={cn("prose prose-slate dark:prose-invert w-full prose-md lg:prose-lg xl:prose-xl text-foreground text-left max-w-none", className)}
     >
       <ReactMarkdown
-        children={content}
         remarkPlugins={[remarkGfm, remarkBreaks, remarkMath]}
         rehypePlugins={[
           rehypeKatex,
@@ -53,7 +52,9 @@ const MarkdownGpt: React.FC<MarkdownGptProps> = ({content, className}) => {
           rehypeSlug,
           rehypeAutolinkHeadings
         ]}
-      />
+      >
+        {content}
+      </ReactMarkdown>
     </article>
   );
 };

@@ -10,16 +10,23 @@ import {
   DropdownMenuTrigger,
 } from "@/src/components/ui/dropdown-menu"
 import {SidebarMenu, SidebarMenuButton, SidebarMenuItem,} from "@/src/components/ui/sidebar"
+import {useEffect, useState} from "react";
+import {useChatStore} from "@/src/store/chat.store";
 
-export function VersionSwitcher(
-  {
-    versions,
-    defaultVersion,
-  }: {
-    versions: string[]
-    defaultVersion: string
-  }) {
-  const [selectedVersion, setSelectedVersion] = React.useState(defaultVersion)
+export function ModelSwitcher() {
+  const [models, setModels] = useState<string[]>([])
+  const getModels = useChatStore((state) => state.getModels)
+  const model = useChatStore((state) => state.model)
+  const setModel = useChatStore((state) => state.setModel)
+
+  useEffect(() => {
+    getModels().then(m => {
+      if (m && m.length > 0) {
+        setModels(m)
+        setModel(m[0])
+      }
+    })
+  }, [getModels, setModels]);
 
   return (
     <SidebarMenu>
@@ -36,7 +43,7 @@ export function VersionSwitcher(
               </div>
               <div className="flex flex-col gap-0.5 leading-none">
                 <span className="font-semibold">Models</span>
-                <span className="">v{selectedVersion}</span>
+                <span className="">{model}</span>
               </div>
               <ChevronsUpDown className="ml-auto"/>
             </SidebarMenuButton>
@@ -45,13 +52,13 @@ export function VersionSwitcher(
             className="w-[--radix-dropdown-menu-trigger-width]"
             align="start"
           >
-            {versions.map((version) => (
+            {models && models.map((m) => (
               <DropdownMenuItem
-                key={version}
-                onSelect={() => setSelectedVersion(version)}
+                key={m}
+                onSelect={() => setModel(m)}
               >
-                v{version}{" "}
-                {version === selectedVersion && <Check className="ml-auto"/>}
+                {m}{" "}
+                {m === model && <Check className="ml-auto"/>}
               </DropdownMenuItem>
             ))}
           </DropdownMenuContent>

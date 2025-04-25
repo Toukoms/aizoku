@@ -104,7 +104,6 @@ export async function login(prevState: LoginResult, formData: FormData): Promise
 }
 
 export async function logout() {
-  console.log("Logout")
   await removeSession();
   redirect("/auth")
 }

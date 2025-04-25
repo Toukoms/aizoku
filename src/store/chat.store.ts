@@ -1,7 +1,11 @@
 import {create} from "zustand/react";
 import {subscribeWithSelector} from "zustand/middleware";
 import {
+  deleteChat,
+  generateChatTitle,
+  getChatById,
   getChatHistoryByUserId,
+  getInstalledOllamaModels,
   getMessagesByChatId,
   renameChat,
   saveMessage,
@@ -18,7 +22,11 @@ type ChatStore = {
   loading: boolean;
   error: string | null;
   chatHistory: Chat[];
+  model: string;
 
+  getModels: () => Promise<string[]>;
+  setModel: (model: string) => void;
+  getChat: () => Promise<Chat|undefined>;
   clearAll: () => void;
   getChatHistory: () => Promise<void>;
   setMessage: (msg: string) => void;
@@ -26,6 +34,8 @@ type ChatStore = {
   setChatId: (chatId: string) => void;
   loadMessagesFromDb: (chatId: string) => Promise<void>;
   sendMessage: () => Promise<void>;
+  renameChat: (title: string) => Promise<void>;
+  deleteChat: () => Promise<void>;
 };
 
 export const useChatStore = create<ChatStore>()(subscribeWithSelector((set, get) => ({
@@ -36,7 +46,48 @@ export const useChatStore = create<ChatStore>()(subscribeWithSelector((set, get)
   error: null,
   newSending: false,
   chatHistory: [],
+  model: "",
 
+  getModels: async () => {
+    try {
+      return await getInstalledOllamaModels();
+    } catch (error) {
+      set({error: (error as Error).message});
+      return [];
+    }
+  },
+  setModel: (model: string) => set({model}),
+  getChat: async () => {
+    try {
+      const {chatId} = get();
+      if (!chatId) throw new Error('Chat ID is not defined');
+      const chat = await getChatById(chatId);
+      if (!chat) throw new Error('Failed to get chat');
+      return chat;
+    } catch (error) {
+      set({error: (error as Error).message});
+    }
+  },
+  renameChat: async (title: string) => {
+    try {
+      const {getChatHistory,chatId} = get()
+      if (!chatId) throw new Error('Chat ID is not defined');
+      await renameChat(chatId, title);
+      await getChatHistory()
+    } catch (error) {
+      set({error: (error as Error).message});
+    }
+  },
+  deleteChat: async () => {
+    try {
+      const {clearAll, chatId} = get()
+      if (!chatId) throw new Error('Chat ID is not defined');
+      clearAll();
+      await deleteChat(chatId);
+    } catch (error) {
+      set({error: (error as Error).message});
+    }
+  },
   clearAll: () => set({chatId: undefined, message: "", messages: [], loading: false, error: null, newSending: false}),
   getChatHistory: async () => {
     const user = await getUserSession();
@@ -54,7 +105,7 @@ export const useChatStore = create<ChatStore>()(subscribeWithSelector((set, get)
   },
 
   sendMessage: async () => {
-    const {chatId, message, messages, getChatHistory} = get();
+    const {chatId, message, messages, getChatHistory, model} = get();
     const trimmed = message.trim();
     if (!trimmed) {
       set({error: "Message can't be empty."});
@@ -70,7 +121,7 @@ export const useChatStore = create<ChatStore>()(subscribeWithSelector((set, get)
         throw new Error("Chat ID is not defined");
       }
 
-      const res = await streamOllama(updatedMessages);
+      const res = await streamOllama(updatedMessages, model);
 
       let currentAiMessage = "";
       updatedMessages = [...updatedMessages, {role: "assistant", content: currentAiMessage}];
@@ -87,7 +138,7 @@ export const useChatStore = create<ChatStore>()(subscribeWithSelector((set, get)
       set({message: ""});
 
       if (updatedMessages.length === 2) {
-        const chat = await renameChat(chatId, updatedMessages);
+        const chat = await generateChatTitle(chatId, updatedMessages, model);
         if (chat) {
           set({chatId: chat.id});
           await getChatHistory()

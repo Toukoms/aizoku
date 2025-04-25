@@ -4,7 +4,7 @@ import * as React from "react"
 import {useEffect} from "react"
 
 import {SearchForm} from "@/src/components/search-form"
-import {VersionSwitcher} from "@/src/components/version-switcher"
+import {ModelSwitcher} from "@/src/components/model-switcher"
 import {
   Sidebar,
   SidebarContent,
@@ -28,12 +28,12 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from "@/src/components/ui/dropdown-menu";
-import {ChevronUp, Edit, MoreHorizontalIcon, Settings, Trash2, User2} from "lucide-react";
+import {ChevronUp, Edit, KeyRound, MoreHorizontalIcon, Settings, Trash2, User2} from "lucide-react";
 import {useIsMobile} from "@/src/hooks/use-mobile";
 import {useAuthStore} from "@/src/store/auth.store";
 import SignOut from "@/src/components/sign-out";
-
-const versions = ["1.0.1", "1.1.0-alpha", "2.0.0-beta1"]
+import EditChat from "@/src/components/edit-chat";
+import DeleteChat from "@/src/components/delete-chat";
 
 const navMain =
   {
@@ -42,7 +42,7 @@ const navMain =
     items: [
       {
         title: "Installation",
-        url: "#",
+        url: "/installation",
       },
     ],
   }
@@ -59,15 +59,12 @@ export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
     if (user) {
       getChatHistory()
     }
-  }, [user]);
+  }, [user, getChatHistory]);
 
   return (
     <Sidebar {...props}>
       <SidebarHeader>
-        <VersionSwitcher
-          versions={versions}
-          defaultVersion={versions[0]}
-        />
+        <ModelSwitcher/>
         <SearchForm/>
       </SidebarHeader>
       <SidebarContent>
@@ -119,13 +116,11 @@ export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
                                 side={isMobile ? "bottom" : "right"}
                                 align={isMobile ? "end" : "start"}
                               >
-                                <DropdownMenuItem>
-                                  <Edit/>
-                                  <span>Change title</span>
+                                <DropdownMenuItem asChild>
+                                  <EditChat/>
                                 </DropdownMenuItem>
-                                <DropdownMenuItem>
-                                  <Trash2/>
-                                  <span>Delete</span>
+                                <DropdownMenuItem asChild>
+                                  <DeleteChat/>
                                 </DropdownMenuItem>
                               </DropdownMenuContent>
                             </DropdownMenu>
@@ -140,35 +135,46 @@ export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
 
       <SidebarFooter>
-        {user && (
-          <SidebarMenu>
+        {user
+          ? (
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <SidebarMenuButton>
+                      <User2/> {user.username}
+                      <ChevronUp className="ml-auto"/>
+                    </SidebarMenuButton>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    side="top"
+                    align="end"
+                    className="w-[--radix-popper-anchor-width]"
+                  >
+                    <DropdownMenuItem>
+                      <Link href={"/user/setting"} className={"flex items-center gap-2"}>
+                        <Settings/>
+                        <span>Settings</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <SignOut/>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          )
+          : <SidebarMenu>
             <SidebarMenuItem>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <SidebarMenuButton>
-                    <User2/> {user.username}
-                    <ChevronUp className="ml-auto"/>
-                  </SidebarMenuButton>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  side="top"
-                  align="end"
-                  className="w-[--radix-popper-anchor-width]"
-                >
-                  <DropdownMenuItem>
-                    <Link href={"/user/setting"} className={"flex items-center gap-2"}>
-                      <Settings/>
-                      <span>Settings</span>
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <SignOut/>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <Link href={"/auth"}
+                    className={"flex items-center gap-2 p-4 hover:bg-accent rounded-md transition-colors duration-300"}>
+                <KeyRound/>
+                Login
+              </Link>
             </SidebarMenuItem>
           </SidebarMenu>
-        )}
+        }
       </SidebarFooter>
       <SidebarRail/>
     </Sidebar>
