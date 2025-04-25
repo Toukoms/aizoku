@@ -16,7 +16,18 @@ function SingUpForm(
     className,
     ...props
   }: React.ComponentPropsWithoutRef<"div">) {
-  const [state, signUpAction] = useActionState(signUp, undefined)
+  const [state, signUpAction] = useActionState(signUp, {
+    username: '',
+    password: '',
+    secretQuestion: '',
+    secretAnswer: '',
+    errors: {
+      username: '',
+      password: '',
+      secretQuestion: '',
+      secretAnswer: '',
+    }
+  })
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -37,6 +48,11 @@ function SingUpForm(
                   id="username"
                   name="username"
                   type="text"
+                  autoComplete="off"
+                  autoCapitalize="off"
+                  autoCorrect="off"
+                  spellCheck="false"
+                  defaultValue={state?.username}
                   placeholder="ex: john-doe"
                   required
                 />
@@ -52,7 +68,8 @@ function SingUpForm(
                     Forgot your password?
                   </Link>
                 </div>
-                <PasswordInput id="password" name="password" placeholder={"***"} required/>
+                <PasswordInput id="password" name="password" defaultValue={state?.password} placeholder={"***"}
+                               required/>
                 {state?.errors.password && (<p className="text-destructive text-sm">{state.errors.password}</p>)}
               </div>
               <div className="grid gap-2">
@@ -61,6 +78,11 @@ function SingUpForm(
                   id="secret-question"
                   name="secretQuestion"
                   type="text"
+                  autoComplete="off"
+                  autoCapitalize="off"
+                  autoCorrect="off"
+                  spellCheck="false"
+                  defaultValue={state?.secretQuestion}
                   placeholder="ex: What is your best color?"
                   required
                 />
@@ -73,6 +95,11 @@ function SingUpForm(
                   id="secret-answer"
                   name="secretAnswer"
                   type="text"
+                  autoComplete="off"
+                  autoCapitalize="off"
+                  autoCorrect="off"
+                  spellCheck="false"
+                  defaultValue={state?.secretAnswer}
                   placeholder="ex: Violet"
                   required
                 />

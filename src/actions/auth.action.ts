@@ -1,27 +1,54 @@
 "use server"
-import {createSession, getSession} from "@/src/lib/session";
+import {createSession, getSession, removeSession} from "@/src/lib/session";
 import {prisma} from "@/src/lib/prisma";
-import {SignUpSchema} from "@/src/schema/auth.schema";
+import {LoginSchema, SignUpSchema, TLoginSchema, TSignUpSchema} from "@/src/schema/auth.schema";
 import {redirect} from "next/navigation";
+import {compare, generateSalt, hash} from "@/src/lib/crypt";
 
 export async function getUserSession() {
   const session = await getSession();
   return prisma.user.findUnique({where: {id: session?.userId}});
 }
 
-export async function signUp(prevState: any, formData: FormData) {
-  const result = SignUpSchema.safeParse(Object.fromEntries(formData));
+type SignUpResult = {
+  errors: {
+    username?: string[] | string | undefined;
+    password?: string[] | string | undefined;
+    secretQuestion?: string[] | string | undefined;
+    secretAnswer?: string[] | string | undefined;
+  };
+} & TSignUpSchema;
+
+export async function signUp(_prevState: SignUpResult, formData: FormData): Promise<SignUpResult> {
+  const inputData = Object.fromEntries(formData) as TSignUpSchema;
+  const result = SignUpSchema.safeParse(inputData);
   if (!result.success) {
     return {
+      ...inputData,
       errors: result.error.flatten().fieldErrors,
     };
   }
 
-  // const hashedPassword = await bcrypt.hash(result.data.password, 10);
+  const existingUser = await prisma.user.findUnique({where: {username: result.data.username}});
+  if (existingUser) {
+    return {
+      ...inputData,
+      errors: {
+        username: "Username already taken, try another one"
+      }
+    }
+  }
+
+  const salt = await generateSalt();
+  const hashedPassword = await hash(result.data.password, salt);
+  const hashedSecretAnswer = await hash(result.data.secretAnswer, salt);
+
   const user = await prisma.user.create({
     data: {
       ...result.data,
-      // password: hashedPassword,
+      salt,
+      password: hashedPassword,
+      secretAnswer: hashedSecretAnswer
     }
   });
 
@@ -30,4 +57,53 @@ export async function signUp(prevState: any, formData: FormData) {
   })
 
   redirect("/chat")
+}
+
+type LoginResult = {
+  errors: {
+    username?: string[] | string | undefined;
+    password?: string[] | string | undefined;
+  };
+} & TLoginSchema;
+
+export async function login(prevState: LoginResult, formData: FormData): Promise<LoginResult> {
+  const inputData = Object.fromEntries(formData) as TLoginSchema;
+  const result = LoginSchema.safeParse(inputData);
+  if (!result.success) {
+    return {
+      ...inputData,
+      errors: result.error.flatten().fieldErrors,
+    }
+  }
+  const user = await prisma.user.findUnique({where: {username: result.data.username}});
+  if (!user) {
+    return {
+      ...inputData,
+      errors: {
+        username: "Invalid username or password",
+        password: "Invalid username or password"
+      }
+    }
+  }
+  const isPasswordCorrect = await compare(result.data.password, user.password, user.salt);
+  if (!isPasswordCorrect) {
+    return {
+      ...inputData,
+      errors: {
+        username: "Invalid username or password",
+        password: "Invalid username or password"
+      }
+    }
+  }
+
+  await createSession({
+    userId: user.id,
+  })
+
+  redirect("/chat")
+}
+
+export async function logout() {
+  await removeSession();
+  redirect("/auth")
 }
