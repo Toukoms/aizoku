@@ -28,7 +28,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from "@/src/components/ui/dropdown-menu";
-import {ChevronUp, Edit, MoreHorizontalIcon, Settings, Trash2, User2} from "lucide-react";
+import {ChevronUp, Edit, KeyRound, MoreHorizontalIcon, Settings, Trash2, User2} from "lucide-react";
 import {useIsMobile} from "@/src/hooks/use-mobile";
 import {useAuthStore} from "@/src/store/auth.store";
 import SignOut from "@/src/components/sign-out";
@@ -140,35 +140,46 @@ export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
 
       <SidebarFooter>
-        {user && (
-          <SidebarMenu>
+        {user
+          ? (
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <SidebarMenuButton>
+                      <User2/> {user.username}
+                      <ChevronUp className="ml-auto"/>
+                    </SidebarMenuButton>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    side="top"
+                    align="end"
+                    className="w-[--radix-popper-anchor-width]"
+                  >
+                    <DropdownMenuItem>
+                      <Link href={"/user/setting"} className={"flex items-center gap-2"}>
+                        <Settings/>
+                        <span>Settings</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <SignOut/>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          )
+          : <SidebarMenu>
             <SidebarMenuItem>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <SidebarMenuButton>
-                    <User2/> {user.username}
-                    <ChevronUp className="ml-auto"/>
-                  </SidebarMenuButton>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  side="top"
-                  align="end"
-                  className="w-[--radix-popper-anchor-width]"
-                >
-                  <DropdownMenuItem>
-                    <Link href={"/user/setting"} className={"flex items-center gap-2"}>
-                      <Settings/>
-                      <span>Settings</span>
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <SignOut/>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <Link href={"/auth"}
+                    className={"flex items-center gap-2 p-4 hover:bg-accent rounded-md transition-colors duration-300"}>
+                <KeyRound/>
+                Login
+              </Link>
             </SidebarMenuItem>
           </SidebarMenu>
-        )}
+        }
       </SidebarFooter>
       <SidebarRail/>
     </Sidebar>
