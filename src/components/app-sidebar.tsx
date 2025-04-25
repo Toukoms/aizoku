@@ -42,7 +42,7 @@ const navMain =
     items: [
       {
         title: "Installation",
-        url: "#",
+        url: "/installation",
       },
     ],
   }

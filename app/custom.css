@@ -12,6 +12,7 @@
     padding: 1rem;
     border-radius: 0.5rem;
     background-color: #f3f4f6;
+    max-width: 100%;
 }
 
 .dark .prose pre {
@@ -19,6 +20,8 @@
 }
 
 .prose pre code {
-    word-break: normal;
-    white-space: pre;
+    word-break: break-word;
+    white-space: pre-wrap;
+    display: block;
+    overflow-x: auto;
 }
