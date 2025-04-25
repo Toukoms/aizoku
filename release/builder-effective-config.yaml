@@ -1,0 +1,20 @@
+directories:
+  output: release
+  buildResources: build
+appId: com.aizoku.app
+productName: AIZOKU
+files:
+  - filter:
+      - dist/**/*
+      - main.js
+linux:
+  target:
+    - AppImage
+    - deb
+win:
+  target:
+    - nsis
+mac:
+  target:
+    - dmg
+electronVersion: 35.2.1

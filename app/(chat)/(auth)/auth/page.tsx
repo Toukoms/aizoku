@@ -6,7 +6,7 @@ import SingUpForm from "@/app/(chat)/(auth)/auth/_components/forms/sing-up.form"
 const AuthPage = () => {
   return (
     <div className="flex flex-col gap-8 min-h-svh w-full items-center justify-center p-6 md:p-10">
-      <div className="flex flex-col items-center justify-center gap-2">
+      <div className="flex flex-col items-center justify-center gap-2 text-center">
         <p className="text-3xl sm:text-4xl md:text-5xl font-semibold">Welcome to our platform! 👋</p>
         <p className="text-lg md:text-xl text-muted-foreground">Please sign in to get started</p>
       </div>

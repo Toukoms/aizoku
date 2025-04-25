@@ -14,13 +14,7 @@ export default function Home() {
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link href="/chat" className="bg-violet-600 hover:bg-violet-700 text-white font-semibold px-6 py-3 rounded-xl transition">
-            Launch AIZOKU
-          </Link>
-          <Link
-            href="/download"
-            className="bg-white text-violet-700 hover:text-white hover:bg-violet-500 font-semibold px-6 py-3 rounded-xl transition"
-          >
-            Download AIZOKU
+            Start New Discussion
           </Link>
         </div>
 

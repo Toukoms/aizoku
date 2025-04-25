@@ -26,7 +26,7 @@ export function ModelSwitcher() {
         setModel(m[0])
       }
     })
-  }, [getModels, setModels]);
+  }, [getModels, setModels, setModel]);
 
   return (
     <SidebarMenu>

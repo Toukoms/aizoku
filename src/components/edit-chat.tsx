@@ -15,7 +15,7 @@ import {Input} from "@/src/components/ui/input";
 import {Edit, Loader2} from "lucide-react";
 import {useChatStore} from "@/src/store/chat.store";
 
-function EditChat() {
+function EditChat({chatId}:{chatId:string}) {
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState("");
   const [open, setOpen] = useState(false)
@@ -23,7 +23,7 @@ function EditChat() {
   const renameChat = useChatStore((state) => state.renameChat)
 
   useEffect(() =>{
-    getChat().then(chat => {
+    getChat(chatId).then(chat => {
       if (chat) {
         setTitle(chat.title)
       }
@@ -55,13 +55,13 @@ function EditChat() {
           <Button type="button" onClick={async (e) => {
             e.preventDefault()
             setLoading(true)
-            const chat = await getChat();
+            const chat = await getChat(chatId);
             if (!chat) {
               setLoading(false)
               return
             }
             if (chat.title !== title) {
-              await renameChat(title)
+              await renameChat(chatId,title)
             }
             setLoading(false)
             setOpen(false)

@@ -26,7 +26,7 @@ type ChatStore = {
 
   getModels: () => Promise<string[]>;
   setModel: (model: string) => void;
-  getChat: () => Promise<Chat|undefined>;
+  getChat: (chatId:string) => Promise<Chat|undefined>;
   clearAll: () => void;
   getChatHistory: () => Promise<void>;
   setMessage: (msg: string) => void;
@@ -34,8 +34,8 @@ type ChatStore = {
   setChatId: (chatId: string) => void;
   loadMessagesFromDb: (chatId: string) => Promise<void>;
   sendMessage: () => Promise<void>;
-  renameChat: (title: string) => Promise<void>;
-  deleteChat: () => Promise<void>;
+  renameChat: (chatId: string, title: string) => Promise<void>;
+  deleteChat: (chatId: string) => Promise<void>;
 };
 
 export const useChatStore = create<ChatStore>()(subscribeWithSelector((set, get) => ({
@@ -56,10 +56,9 @@ export const useChatStore = create<ChatStore>()(subscribeWithSelector((set, get)
       return [];
     }
   },
-  setModel: (model: string) => set({model}),
-  getChat: async () => {
+  setModel: (model) => set({model}),
+  getChat: async (chatId) => {
     try {
-      const {chatId} = get();
       if (!chatId) throw new Error('Chat ID is not defined');
       const chat = await getChatById(chatId);
       if (!chat) throw new Error('Failed to get chat');
@@ -68,9 +67,9 @@ export const useChatStore = create<ChatStore>()(subscribeWithSelector((set, get)
       set({error: (error as Error).message});
     }
   },
-  renameChat: async (title: string) => {
+  renameChat: async (chatId,title) => {
     try {
-      const {getChatHistory,chatId} = get()
+      const {getChatHistory} = get()
       if (!chatId) throw new Error('Chat ID is not defined');
       await renameChat(chatId, title);
       await getChatHistory()
@@ -78,12 +77,13 @@ export const useChatStore = create<ChatStore>()(subscribeWithSelector((set, get)
       set({error: (error as Error).message});
     }
   },
-  deleteChat: async () => {
+  deleteChat: async (chatId) => {
     try {
-      const {clearAll, chatId} = get()
+      const {clearAll, getChatHistory} = get()
       if (!chatId) throw new Error('Chat ID is not defined');
       clearAll();
       await deleteChat(chatId);
+      await getChatHistory();
     } catch (error) {
       set({error: (error as Error).message});
     }
