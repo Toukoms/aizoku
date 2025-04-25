@@ -13,7 +13,7 @@ function NewChat() {
     <Button onClick={(e) => {
       e.preventDefault()
       clearChat()
-      router.push("/")
+      router.push("/chat")
     }}>
       New Chat
       <MessageSquareMore className={"size-4"}/>

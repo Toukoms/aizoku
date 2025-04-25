@@ -36,7 +36,7 @@ export async function renameChat(chatId: string, messages: TMessage[]) {
   };
 
   const res = await askOllama([...messages, prompt]);
-  const title = res.message.content;
+  const title = res.message.content.replace("\"", "");
 
   return await prisma.chat.update({
     where: {id: chatId},

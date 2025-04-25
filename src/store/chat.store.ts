@@ -8,6 +8,7 @@ import {
   streamOllama
 } from "@/src/actions/chat.action";
 import {Chat} from "@/src/generated/prisma/client"
+import {getUserSession} from "@/src/actions/auth.action";
 
 type ChatStore = {
   chatId?: string;
@@ -19,7 +20,7 @@ type ChatStore = {
   chatHistory: Chat[];
 
   clearAll: () => void;
-  getChatHistory: (userId: string) => Promise<void>;
+  getChatHistory: () => Promise<void>;
   setMessage: (msg: string) => void;
   setNewSending: (msgSent: boolean) => void;
   setChatId: (chatId: string) => void;
@@ -37,8 +38,10 @@ export const useChatStore = create<ChatStore>()(subscribeWithSelector((set, get)
   chatHistory: [],
 
   clearAll: () => set({chatId: undefined, message: "", messages: [], loading: false, error: null, newSending: false}),
-  getChatHistory: async (userId: string) => {
-    const chats = await getChatHistoryByUserId("");
+  getChatHistory: async () => {
+    const user = await getUserSession();
+    if (!user) throw new Error('Failed to get user');
+    const chats = await getChatHistoryByUserId(user.id);
     set({chatHistory: chats});
   },
   setMessage: (msg) => set({message: msg}),
@@ -87,7 +90,7 @@ export const useChatStore = create<ChatStore>()(subscribeWithSelector((set, get)
         const chat = await renameChat(chatId, updatedMessages);
         if (chat) {
           set({chatId: chat.id});
-          await getChatHistory("")
+          await getChatHistory()
         }
 
       }
