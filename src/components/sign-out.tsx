@@ -1,19 +1,16 @@
-import {signOut} from "@/src/lib/auth"
-import {Button} from "@/src/components/ui/button";
+"use client"
 import {LogOutIcon} from "lucide-react";
+import {useAuthStore} from "@/src/store/auth.store";
 
 export default function SignOut() {
+  const logout = useAuthStore((state) => state.logout)
   return (
-    <form
-      action={async () => {
-        "use server"
-        await signOut()
-      }}
-    >
-      <Button variant="secondary" type="submit">
-        <LogOutIcon/>
-        Logout
-      </Button>
-    </form>
+    <button type={"button"} onClick={(e) => {
+      e.preventDefault()
+      logout()
+    }} className={"w-full flex items-center gap-2 cursor-pointer"}>
+      <LogOutIcon/>
+      Logout
+    </button>
   )
 }

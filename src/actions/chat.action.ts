@@ -3,18 +3,53 @@
 import ollama from "ollama";
 import {prisma} from "@/src/lib/prisma";
 
-export async function askOllama(messages: TMessage[]) {
+export async function askOllama(messages: TMessage[], maxLength?: number) {
   return await ollama.chat({
     model: 'qwen2.5-coder:3b',
     messages,
+    options: {
+      num_predict: maxLength ?? -1
+    }
   });
+}
+
+export async function streamOllama(messages: TMessage[]) {
+  return await ollama.chat({
+    model: 'qwen2.5-coder:3b',
+    messages,
+    stream: true
+  });
+}
+
+export async function renameChat(chatId: string, messages: TMessage[]) {
+  const messageCount = await prisma.message.count({
+    where: {chatId}
+  });
+
+  if (messageCount !== 2) {
+    return null;
+  }
+
+  const prompt: TMessage = {
+    role: "user",
+    content: "Generate a short, concise title (max 32 characters) for this chat based on the past messages. Respond with the title only."
+  };
+
+  const res = await askOllama([...messages, prompt]);
+  const title = res.message.content.replace("\"", "");
+
+  return await prisma.chat.update({
+    where: {id: chatId},
+    data: {title}
+  })
 }
 
 export async function createChat(userId: string) {
   return await prisma.chat.create({
     data: {
       title: "New chat",
-      userId
+      userId,
+      model: 'qwen2.5-coder:3b',
     },
   });
 }
@@ -29,56 +64,9 @@ export async function saveMessage(chatId: string, content: string, role: "user" 
   })
 }
 
-export async function sendAndSaveMessage(
-  {
-    chatId,
-    content,
-    messages
-  }: {
-    chatId: string;
-    content: string;
-    messages?: TMessage[];
-  }): Promise<{
-  chatId: string | undefined;
-  saved: boolean;
-  savedUserMessage: TMessage;
-  savedAiMessage?: TMessage;
-}> {
-  if (!content || content.trim() === "") {
-    throw new Error("Message can't be empty");
-  }
-
-  const userMessage: TMessage = {
-    role: "user",
-    content,
-  };
-
-  const result = await askOllama(messages ? [...messages, userMessage] : [userMessage]);
-
-  const aiContent = result.message?.content ?? "";
-
-  if (!aiContent.trim()) {
-    return {
-      chatId,
-      saved: false,
-      savedUserMessage: userMessage,
-      savedAiMessage: undefined,
-    };
-  }
-
-  const savedUserMessage = (await saveMessage(chatId, content, "user")) as TMessage;
-  const savedAiMessage = (await saveMessage(chatId, aiContent, "assistant")) as TMessage;
-
-  return {
-    chatId,
-    saved: true,
-    savedUserMessage,
-    savedAiMessage,
-  };
-}
-
-export async function getChatHistory() {
+export async function getChatHistoryByUserId(userId: string) {
   return await prisma.chat.findMany({
+    where: {userId},
     orderBy: {createdAt: "desc"},
   });
 }
