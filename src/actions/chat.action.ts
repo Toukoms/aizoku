@@ -4,9 +4,9 @@ import ollama from "ollama";
 import {prisma} from "@/src/lib/prisma";
 import {redirect} from "next/navigation";
 
-export async function askOllama(messages: TMessage[], maxLength?: number) {
+export async function askOllama(messages: TMessage[], model: string, maxLength?: number) {
   return await ollama.chat({
-    model: 'qwen2.5-coder:3b',
+    model,
     messages,
     options: {
       num_predict: maxLength ?? -1
@@ -14,15 +14,15 @@ export async function askOllama(messages: TMessage[], maxLength?: number) {
   });
 }
 
-export async function streamOllama(messages: TMessage[]) {
+export async function streamOllama(messages: TMessage[], model: string) {
   return await ollama.chat({
-    model: 'qwen2.5-coder:3b',
+    model,
     messages,
     stream: true
   });
 }
 
-export async function generateChatTitle(chatId: string, messages: TMessage[]) {
+export async function generateChatTitle(chatId: string, messages: TMessage[], model: string) {
   const messageCount = await prisma.message.count({
     where: {chatId}
   });
@@ -36,8 +36,8 @@ export async function generateChatTitle(chatId: string, messages: TMessage[]) {
     content: "Generate a short, concise title (max 32 characters) for this chat based on the past messages. Respond with the title only."
   };
 
-  const res = await askOllama([...messages, prompt]);
-  const title = res.message.content.replace("\"", "");
+  const res = await askOllama([...messages, prompt], model);
+  const title = res.message.content.replace(/"/g, '');
 
   return prisma.chat.update({
     where: {id: chatId},
@@ -45,12 +45,12 @@ export async function generateChatTitle(chatId: string, messages: TMessage[]) {
   });
 }
 
-export async function createChat(userId: string) {
+export async function createChat(userId: string, model: string) {
   return prisma.chat.create({
     data: {
       title: "New chat",
       userId,
-      model: 'qwen2.5-coder:3b',
+      model
     },
   });
 }
@@ -97,4 +97,9 @@ export async function getMessagesByChatId(chatId: string) {
     where: {chatId},
     orderBy: {createdAt: "asc"},
   });
+}
+
+export async function getInstalledOllamaModels() {
+  const res = await ollama.list();
+  return res.models.map(model => model.name);
 }

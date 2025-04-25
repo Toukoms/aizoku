@@ -2,8 +2,10 @@ import {create} from "zustand/react";
 import {subscribeWithSelector} from "zustand/middleware";
 import {
   deleteChat,
-  generateChatTitle, getChatById,
+  generateChatTitle,
+  getChatById,
   getChatHistoryByUserId,
+  getInstalledOllamaModels,
   getMessagesByChatId,
   renameChat,
   saveMessage,
@@ -20,7 +22,10 @@ type ChatStore = {
   loading: boolean;
   error: string | null;
   chatHistory: Chat[];
+  model: string;
 
+  getModels: () => Promise<string[]>;
+  setModel: (model: string) => void;
   getChat: () => Promise<Chat|undefined>;
   clearAll: () => void;
   getChatHistory: () => Promise<void>;
@@ -41,7 +46,17 @@ export const useChatStore = create<ChatStore>()(subscribeWithSelector((set, get)
   error: null,
   newSending: false,
   chatHistory: [],
+  model: "",
 
+  getModels: async () => {
+    try {
+      return await getInstalledOllamaModels();
+    } catch (error) {
+      set({error: (error as Error).message});
+      return [];
+    }
+  },
+  setModel: (model: string) => set({model}),
   getChat: async () => {
     try {
       const {chatId} = get();
@@ -90,7 +105,7 @@ export const useChatStore = create<ChatStore>()(subscribeWithSelector((set, get)
   },
 
   sendMessage: async () => {
-    const {chatId, message, messages, getChatHistory} = get();
+    const {chatId, message, messages, getChatHistory, model} = get();
     const trimmed = message.trim();
     if (!trimmed) {
       set({error: "Message can't be empty."});
@@ -106,7 +121,7 @@ export const useChatStore = create<ChatStore>()(subscribeWithSelector((set, get)
         throw new Error("Chat ID is not defined");
       }
 
-      const res = await streamOllama(updatedMessages);
+      const res = await streamOllama(updatedMessages, model);
 
       let currentAiMessage = "";
       updatedMessages = [...updatedMessages, {role: "assistant", content: currentAiMessage}];
@@ -123,7 +138,7 @@ export const useChatStore = create<ChatStore>()(subscribeWithSelector((set, get)
       set({message: ""});
 
       if (updatedMessages.length === 2) {
-        const chat = await generateChatTitle(chatId, updatedMessages);
+        const chat = await generateChatTitle(chatId, updatedMessages, model);
         if (chat) {
           set({chatId: chat.id});
           await getChatHistory()

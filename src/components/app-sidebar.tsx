@@ -4,7 +4,7 @@ import * as React from "react"
 import {useEffect} from "react"
 
 import {SearchForm} from "@/src/components/search-form"
-import {VersionSwitcher} from "@/src/components/version-switcher"
+import {ModelSwitcher} from "@/src/components/model-switcher"
 import {
   Sidebar,
   SidebarContent,
@@ -35,8 +35,6 @@ import SignOut from "@/src/components/sign-out";
 import EditChat from "@/src/components/edit-chat";
 import DeleteChat from "@/src/components/delete-chat";
 
-const versions = ["1.0.1", "1.1.0-alpha", "2.0.0-beta1"]
-
 const navMain =
   {
     title: "Getting Started",
@@ -66,10 +64,7 @@ export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar {...props}>
       <SidebarHeader>
-        <VersionSwitcher
-          versions={versions}
-          defaultVersion={versions[0]}
-        />
+        <ModelSwitcher/>
         <SearchForm/>
       </SidebarHeader>
       <SidebarContent>

@@ -21,6 +21,7 @@ const InputChat = ({className}: { className?: string }) => {
   const loading = useAuthStore((state) => state.isLoading)
   const user = useAuthStore((state) => state.user)
   const getUser = useAuthStore((state) => state.getUser)
+  const model = useChatStore((state) => state.model)
 
   useEffect(() => {
     getUser()
@@ -40,7 +41,7 @@ const InputChat = ({className}: { className?: string }) => {
       throw new Error("Message can't be empty")
     }
     if (!chatIdFromUrl) {
-      const chat = await createChat(user.id)
+      const chat = await createChat(user.id, model)
       const chatId = chat.id;
       if (chatId) {
         getChatHistory()
