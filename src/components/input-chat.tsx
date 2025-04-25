@@ -24,7 +24,7 @@ const InputChat = ({className}: { className?: string }) => {
 
   useEffect(() => {
     getUser()
-  }, []);
+  }, [getUser]);
 
   if (loading || !user) {
     return null

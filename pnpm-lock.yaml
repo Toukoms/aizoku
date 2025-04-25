@@ -129,6 +129,9 @@ importers:
       '@eslint/eslintrc':
         specifier: ^3
         version: 3.3.1
+      '@next/eslint-plugin-next':
+        specifier: ^15.3.1
+        version: 15.3.1
       '@tailwindcss/postcss':
         specifier: ^4
         version: 4.1.4
@@ -147,6 +150,9 @@ importers:
       '@types/react-syntax-highlighter':
         specifier: ^15.5.13
         version: 15.5.13
+      dotenv:
+        specifier: ^16.5.0
+        version: 16.5.0
       eslint:
         specifier: ^9
         version: 9.25.1(jiti@2.4.2)
@@ -1552,6 +1558,10 @@ packages:
   doctrine@2.1.0:
     resolution: {integrity: sha512-35mSku4ZXK0vfCuHEDAwt55dg2jNajHZ1odvF+8SSr82EsZY4QmXfuWso8oEd8zRhVObSN18aM0CjSdoBX7zIw==}
     engines: {node: '>=0.10.0'}
+
+  dotenv@16.5.0:
+    resolution: {integrity: sha512-m/C+AwOAr9/W1UOIZUo232ejMNnJAJtYQjUbHoNTBNTJSvqzzDh7vnrei3o3r3m9blf6ZoDkvcw0VmozNRFJxg==}
+    engines: {node: '>=12'}
 
   dunder-proto@1.0.1:
     resolution: {integrity: sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==}
@@ -4274,6 +4284,8 @@ snapshots:
   doctrine@2.1.0:
     dependencies:
       esutils: 2.0.3
+
+  dotenv@16.5.0: {}
 
   dunder-proto@1.0.1:
     dependencies:

@@ -59,7 +59,7 @@ export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
     if (user) {
       getChatHistory()
     }
-  }, [user]);
+  }, [user, getChatHistory]);
 
   return (
     <Sidebar {...props}>
