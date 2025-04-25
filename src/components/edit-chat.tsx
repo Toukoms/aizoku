@@ -28,7 +28,7 @@ function EditChat({chatId}:{chatId:string}) {
         setTitle(chat.title)
       }
     })
-  }, [getChat, setTitle])
+  }, [getChat, setTitle, chatId])
 
   return (
     <Dialog open={open} onOpenChange={(value) => setOpen(value)}>
