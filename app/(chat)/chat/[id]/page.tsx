@@ -1,14 +1,16 @@
 import React from 'react';
 import Messages from "@/app/(chat)/chat/[id]/_components/messages";
 import InputChat from "@/src/components/input-chat";
-import {notFound} from "next/navigation";
+import { redirect} from "next/navigation";
 import {ScrollArea} from "@/src/components/ui/scroll-area";
+import {getChatById} from "@/src/actions/chat.action";
 
 const ChatPage = async ({params}: TParams) => {
   const {id} = await params;
+  const chat = await getChatById(id);
 
-  if (!id) {
-    notFound()
+  if (!chat) {
+    redirect("/chat")
   }
 
   return (

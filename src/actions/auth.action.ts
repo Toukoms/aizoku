@@ -2,8 +2,8 @@
 import {createSession, getSession, removeSession} from "@/src/lib/session";
 import {prisma} from "@/src/lib/prisma";
 import {LoginSchema, SignUpSchema, TLoginSchema, TSignUpSchema} from "@/src/schema/auth.schema";
-import {redirect} from "next/navigation";
 import {compare, generateSalt, hash} from "@/src/lib/crypt";
+import {redirect} from "next/navigation";
 
 export async function getUserSession() {
   const session = await getSession();

@@ -4,7 +4,7 @@ import {Button} from "@/src/components/ui/button";
 import {Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter} from "@/src/components/ui/dialog";
 import {useChatStore} from "@/src/store/chat.store";
 
-function DeleteChat() {
+function DeleteChat({chatId}:{ chatId: string}) {
   const [open, setOpen] = useState(false)
   const deleteChat = useChatStore((state) => state.deleteChat)
 
@@ -24,7 +24,7 @@ function DeleteChat() {
         <DialogFooter >
           <Button variant={"destructive"} onClick={async (e) => {
             e.preventDefault()
-            await deleteChat()
+            await deleteChat(chatId)
             setOpen(false)
           }}>Delete</Button>
           <Button variant={"secondary"} onClick={() => setOpen(false)}>Cancel</Button>

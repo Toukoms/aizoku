@@ -28,7 +28,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from "@/src/components/ui/dropdown-menu";
-import {ChevronUp, Edit, KeyRound, MoreHorizontalIcon, Settings, Trash2, User2} from "lucide-react";
+import {ChevronUp, KeyRound, MoreHorizontalIcon, Settings, User2} from "lucide-react";
 import {useIsMobile} from "@/src/hooks/use-mobile";
 import {useAuthStore} from "@/src/store/auth.store";
 import SignOut from "@/src/components/sign-out";
@@ -117,10 +117,10 @@ export function AppSidebar({...props}: React.ComponentProps<typeof Sidebar>) {
                                 align={isMobile ? "end" : "start"}
                               >
                                 <DropdownMenuItem asChild>
-                                  <EditChat/>
+                                  <EditChat chatId={item.id} />
                                 </DropdownMenuItem>
                                 <DropdownMenuItem asChild>
-                                  <DeleteChat/>
+                                  <DeleteChat chatId={item.id}/>
                                 </DropdownMenuItem>
                               </DropdownMenuContent>
                             </DropdownMenu>

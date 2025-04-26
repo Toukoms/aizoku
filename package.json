@@ -2,14 +2,41 @@
   "name": "aizoku",
   "version": "0.1.0",
   "private": true,
+  "license": "MIT",
+  "description": "Offline AI, privacy friendly",
+  "author": "Tokiniaina <hei.tokiniaina.3@gmail.com> (https://tokiniaina.vercel.app)",
+  "main": "main.js",
   "scripts": {
     "dev": "next dev",
     "build": "prisma generate && next build",
     "start": "next start",
     "vercel-build": "prisma generate && prisma migrate deploy && next build",
     "prisma:generate": "prisma generate",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "run:app": "node .next/standalone/server.js",
+    "run:desktop": "electron . --no-sandbox"
   },
+  "build": {
+  "appId": "com.aizoku.app",
+  "productName": "AIZOKU",
+  "files": [
+    "dist/**/*",
+    "main.js"
+  ],
+  "directories": {
+    "output": "release"
+  },
+  "linux": {
+    "target": ["AppImage", "deb"]
+  },
+  "win": {
+    "target": ["nsis"]
+  },
+  "mac": {
+    "target": ["dmg"]
+  }
+},
+
   "dependencies": {
     "@auth/prisma-adapter": "^2.9.0",
     "@prisma/client": "^6.6.0",
@@ -53,7 +80,6 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
-    "@next/eslint-plugin-next": "^15.3.1",
     "@tailwindcss/postcss": "^4",
     "@tailwindcss/typography": "^0.5.16",
     "@types/node": "^20",
@@ -61,6 +87,8 @@
     "@types/react-dom": "^19",
     "@types/react-syntax-highlighter": "^15.5.13",
     "dotenv": "^16.5.0",
+    "electron": "^35.2.1",
+    "electron-builder": "^26.0.12",
     "eslint": "^9",
     "eslint-config-next": "15.3.1",
     "prisma": "^6.6.0",

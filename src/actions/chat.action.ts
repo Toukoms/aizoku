@@ -2,7 +2,7 @@
 
 import ollama from "ollama";
 import {prisma} from "@/src/lib/prisma";
-import {redirect} from "next/navigation";
+import {getUserSession} from "@/src/actions/auth.action";
 
 export async function askOllama(messages: TMessage[], model: string, maxLength?: number) {
   return await ollama.chat({
@@ -56,8 +56,10 @@ export async function createChat(userId: string, model: string) {
 }
 
 export async function getChatById(chatId: string) {
+  const user = await getUserSession()
+  if (!user) throw new Error('Failed to get user');
   return prisma.chat.findUnique({
-    where: {id: chatId},
+    where: {id: chatId, userId: user.id},
   });
 }
 
@@ -69,10 +71,7 @@ export async function renameChat(chatId: string, title: string) {
 }
 
 export async function deleteChat(chatId: string) {
-  const chat = await prisma.chat.delete({where: {id: chatId}});
-  if (chat) {
-    redirect("/chat")
-  }
+  await prisma.chat.delete({where: {id: chatId}});
 }
 
 export async function saveMessage(chatId: string, content: string, role: "user" | "assistant") {
