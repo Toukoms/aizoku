@@ -43,5 +43,7 @@ next-env.d.ts
 /src/generated
 .idea
 /prisma/dev.db
+/dist
+/release
 
 

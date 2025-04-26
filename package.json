@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "license": "MIT",
+  "description": "Offline AI, privacy friendly",
+  "author": "Tokiniaina <hei.tokiniaina.3@gmail.com> (https://tokiniaina.vercel.app)",
   "main": "main.js",
   "scripts": {
     "dev": "next dev",
