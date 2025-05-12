@@ -84,6 +84,10 @@ export async function saveMessage(chatId: string, content: string, role: "user" 
   });
 }
 
+export async function abortStreaming() {
+    await ollama.abort()
+}
+
 export async function getChatHistoryByUserId(userId: string) {
   return prisma.chat.findMany({
     where: {userId},

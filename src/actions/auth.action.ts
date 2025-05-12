@@ -39,7 +39,7 @@ export async function signUp(_prevState: SignUpResult, formData: FormData): Prom
     }
   }
 
-  const salt = await generateSalt();
+  const salt = generateSalt();
   const hashedPassword = await hash(result.data.password, salt);
   const hashedSecretAnswer = await hash(result.data.secretAnswer, salt);
 
