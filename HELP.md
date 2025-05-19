@@ -9,8 +9,8 @@ This file gathers helpful external documentation links, tools, and guides used i
 
 ## 🗃️ Database & ORM
 
-- PostgreSQL: https://www.postgresql.org/docs/
 - Prisma ORM: https://www.prisma.io/docs
+- SQLite: https://www.sqlite.org/docs.html
 
 ## ⚙️ Next.js & Server Actions
 

@@ -9,7 +9,7 @@ We welcome issues, improvements, new features, or even docs. Here’s how to get
 
 - **Next.js** (App Router, Server Actions)
 - **TypeScript**
-- **Prisma** + **PostgreSQL**
+- **Prisma** + **SQLite**
 - **Zustand** (state management)
 - **Zod** (schema validation)
 - **React Markdown**
@@ -61,7 +61,7 @@ Follow the [README.md](./README.md) for setup instructions.
 Make sure:
 
 - You have **Ollama** installed and running
-- Your `.env` file is correctly configured with PostgreSQL
+- Your `.env` file is correctly configured
 
 ```bash
 pnpm dev
