@@ -17,28 +17,35 @@
     "run:desktop": "electron . --no-sandbox"
   },
   "build": {
-  "appId": "com.aizoku.app",
-  "productName": "AIZOKU",
-  "files": [
-    "dist/**/*",
-    "main.js"
-  ],
-  "directories": {
-    "output": "release"
+    "appId": "com.aizoku.app",
+    "productName": "AIZOKU",
+    "files": [
+      "dist/**/*",
+      "main.js"
+    ],
+    "directories": {
+      "output": "release"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ]
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ]
+    },
+    "mac": {
+      "target": [
+        "dmg"
+      ]
+    }
   },
-  "linux": {
-    "target": ["AppImage", "deb"]
-  },
-  "win": {
-    "target": ["nsis"]
-  },
-  "mac": {
-    "target": ["dmg"]
-  }
-},
-
   "dependencies": {
     "@auth/prisma-adapter": "^2.9.0",
+    "@hookform/resolvers": "^5.0.1",
     "@prisma/client": "^6.6.0",
     "@prisma/extension-accelerate": "^1.3.0",
     "@radix-ui/react-dialog": "^1.1.10",
@@ -60,6 +67,7 @@
     "ollama": "^0.5.15",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-hook-form": "^7.56.4",
     "react-markdown": "^10.1.0",
     "react-resizable-panels": "^2.1.8",
     "react-spinners": "^0.17.0",

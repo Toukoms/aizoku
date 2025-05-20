@@ -1,9 +1,8 @@
-import React from 'react';
-import Messages from "@/app/(chat)/chat/[id]/_components/messages";
+import Messages from "@/app/(main)/(chat)/chat/[id]/_components/messages";
+import { getChatById } from "@/src/actions/chat.action";
 import InputChat from "@/src/components/input-chat";
-import { redirect} from "next/navigation";
-import {ScrollArea} from "@/src/components/ui/scroll-area";
-import {getChatById} from "@/src/actions/chat.action";
+import { ScrollArea } from "@/src/components/ui/scroll-area";
+import { redirect } from "next/navigation";
 
 const ChatPage = async ({params}: TParams) => {
   const {id} = await params;
