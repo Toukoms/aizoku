@@ -1,4 +1,4 @@
-import {z} from "zod";
+import { z } from "zod";
 
 export const LoginSchema = z.object({
   username: z.string(),
@@ -15,4 +15,17 @@ export const SignUpSchema = z.object({
 })
 
 export type TSignUpSchema = z.infer<typeof SignUpSchema>
+
+export const GetByUserNameSchema = z.object({
+  username: z.string().min(3).max(47),
+})
+
+export type TGetByUserNameSchema = z.infer<typeof GetByUserNameSchema>
+
+export const ResetPasswordSchema = z.object({
+  newPassword: z.string().min(8).max(56),
+  confirmNewPassword: z.string().min(8).max(56),
+})
+
+export type TResetPasswordSchema = z.infer<typeof ResetPasswordSchema>
 

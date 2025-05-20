@@ -2,7 +2,7 @@
 
 ## Features
 
-- [ ] Forgot password by secret question and secret answer
+- [X] Reset password by secret question and secret answer
 - [ ] Add stop button while chat streaming
 - [ ] Add setting of user
 - [ ] Press ENTER should send message

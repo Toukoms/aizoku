@@ -1,33 +1,37 @@
-"use client"
-import React, {useActionState} from 'react';
-import {cn} from "@/src/lib/utils";
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/src/components/ui/card";
-import {Label} from "@/src/components/ui/label";
-import {Input} from "@/src/components/ui/input";
-import Link from "next/link";
-import {Button} from "@/src/components/ui/button";
+"use client";
+import { signUp } from "@/src/actions/auth.action";
 import PasswordInput from "@/src/components/password-input";
-import {signUp} from "@/src/actions/auth.action";
-import {useFormStatus} from "react-dom";
-import {Loader2} from "lucide-react";
+import { Button } from "@/src/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/src/components/ui/card";
+import { Input } from "@/src/components/ui/input";
+import { Label } from "@/src/components/ui/label";
+import { cn } from "@/src/lib/utils";
+import { Loader2 } from "lucide-react";
+import React, { useActionState } from "react";
+import { useFormStatus } from "react-dom";
 
-function SingUpForm(
-  {
-    className,
-    ...props
-  }: React.ComponentPropsWithoutRef<"div">) {
+function SingUpForm({
+  className,
+  ...props
+}: React.ComponentPropsWithoutRef<"div">) {
   const [state, signUpAction] = useActionState(signUp, {
-    username: '',
-    password: '',
-    secretQuestion: '',
-    secretAnswer: '',
+    username: "",
+    password: "",
+    secretQuestion: "",
+    secretAnswer: "",
     errors: {
-      username: '',
-      password: '',
-      secretQuestion: '',
-      secretAnswer: '',
-    }
-  })
+      username: "",
+      password: "",
+      secretQuestion: "",
+      secretAnswer: "",
+    },
+  });
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -35,8 +39,8 @@ function SingUpForm(
         <CardHeader>
           <CardTitle className="text-2xl">Sign Up</CardTitle>
           <CardDescription>
-            Create your account with unique username and make a secret question and answer so you can change your
-            password later if you forget it.
+            Create your account with unique username and make a secret question
+            and answer so you can change your password later if you forget it.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -56,21 +60,26 @@ function SingUpForm(
                   placeholder="ex: john-doe"
                   required
                 />
-                {state?.errors.username && (<p className="text-destructive text-sm">{state.errors.username}</p>)}
+                {state?.errors.username && (
+                  <p className="text-destructive text-sm">
+                    {state.errors.username}
+                  </p>
+                )}
               </div>
               <div className="grid gap-2">
-                <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
-                  <Link
-                    href="/password"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                  >
-                    Forgot your password?
-                  </Link>
-                </div>
-                <PasswordInput id="password" name="password" defaultValue={state?.password} placeholder={"***"}
-                               required/>
-                {state?.errors.password && (<p className="text-destructive text-sm">{state.errors.password}</p>)}
+                <Label htmlFor="password">Password</Label>
+                <PasswordInput
+                  id="password"
+                  name="password"
+                  defaultValue={state?.password}
+                  placeholder={"***"}
+                  required
+                />
+                {state?.errors.password && (
+                  <p className="text-destructive text-sm">
+                    {state.errors.password}
+                  </p>
+                )}
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="email">Secret Question</Label>
@@ -87,7 +96,10 @@ function SingUpForm(
                   required
                 />
                 {state?.errors.secretQuestion && (
-                  <p className="text-destructive text-sm">{state.errors.secretQuestion}</p>)}
+                  <p className="text-destructive text-sm">
+                    {state.errors.secretQuestion}
+                  </p>
+                )}
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="email">Secret Answer</Label>
@@ -104,9 +116,12 @@ function SingUpForm(
                   required
                 />
                 {state?.errors.secretAnswer && (
-                  <p className="text-destructive text-sm">{state.errors.secretAnswer}</p>)}
+                  <p className="text-destructive text-sm">
+                    {state.errors.secretAnswer}
+                  </p>
+                )}
               </div>
-              <SubmitButton/>
+              <SubmitButton />
             </div>
           </form>
         </CardContent>
@@ -115,12 +130,11 @@ function SingUpForm(
   );
 }
 
-const SubmitButton = (
-  {
-    className,
-    ...props
-  }: React.ComponentProps<typeof Button>) => {
-  const {pending} = useFormStatus()
+const SubmitButton = ({
+  className,
+  ...props
+}: React.ComponentProps<typeof Button>) => {
+  const { pending } = useFormStatus();
   return (
     <Button
       type="submit"
@@ -131,18 +145,16 @@ const SubmitButton = (
       disabled={pending}
       {...props}
     >
-      {
-        pending ? (
-          <div className="flex items-center justify-center">
-            <Loader2 className="size-4 animate-spin"/>
-            <span className="ml-2">Submitting...</span>
-          </div>
-        ) : (
-          'Submit'
-        )
-      }
+      {pending ? (
+        <div className="flex items-center justify-center">
+          <Loader2 className="size-4 animate-spin" />
+          <span className="ml-2">Submitting...</span>
+        </div>
+      ) : (
+        "Submit"
+      )}
     </Button>
-  )
-}
+  );
+};
 
 export default SingUpForm;
