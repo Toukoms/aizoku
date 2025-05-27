@@ -32,7 +32,6 @@ alone when Aizoku is with you._
 - **pnpm** (or npm/yarn)
 - **Ollama** installed locally
     - [https://ollama.com/download](https://ollama.com/download)
-- **PostgreSQL** database
 
 ## 🚀 Getting Started (Local Installation)
 
@@ -60,7 +59,7 @@ alone when Aizoku is with you._
 ## ⚙️ Tech Stack
 
 - 🧱 Next.js (with **Server Actions**)
-- 💾 Prisma ORM + PostgreSQL
+- 💾 Prisma ORM + SQLite
 - ⚛️ React (with **Zustand** for state management)
 - 🧾 React Markdown (for rendering messages)
 - 🧠 Ollama (local AI model management)

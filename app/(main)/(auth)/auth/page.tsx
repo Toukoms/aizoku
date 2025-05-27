@@ -1,7 +1,6 @@
-import React from 'react';
-import {LoginForm} from "@/app/(chat)/(auth)/auth/_components/forms/login.form";
-import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/src/components/ui/tabs";
-import SingUpForm from "@/app/(chat)/(auth)/auth/_components/forms/sing-up.form";
+import { LoginForm } from "@/app/(main)/(auth)/auth/_components/forms/login.form";
+import SingUpForm from "@/app/(main)/(auth)/auth/_components/forms/sing-up.form";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/src/components/ui/tabs";
 
 const AuthPage = () => {
   return (

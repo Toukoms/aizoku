@@ -9,7 +9,8 @@ import {
   getMessagesByChatId,
   renameChat,
   saveMessage,
-  streamOllama
+  streamOllama,
+  abortStreaming
 } from "@/src/actions/chat.action";
 import {Chat} from "@/src/generated/prisma/client"
 import {getUserSession} from "@/src/actions/auth.action";
@@ -79,9 +80,8 @@ export const useChatStore = create<ChatStore>()(subscribeWithSelector((set, get)
   },
   deleteChat: async (chatId) => {
     try {
-      const {clearAll, getChatHistory} = get()
+      const {getChatHistory} = get()
       if (!chatId) throw new Error('Chat ID is not defined');
-      clearAll();
       await deleteChat(chatId);
       await getChatHistory();
     } catch (error) {
@@ -161,6 +161,7 @@ useChatStore.subscribe(
   (chatId, prevChatId) => {
     if (chatId && chatId !== prevChatId) {
       useChatStore.getState().loadMessagesFromDb(chatId);
+      abortStreaming()
       if (useChatStore.getState().newSending) {
         useChatStore.getState().sendMessage();
       }
