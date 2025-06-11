@@ -1,8 +1,15 @@
-"use server"
+"use server";
 import { compare, generateSalt, hash } from "@/src/lib/crypt";
 import { prisma } from "@/src/lib/prisma";
 import { createSession, getSession, removeSession } from "@/src/lib/session";
-import { GetByUserNameSchema, LoginSchema, SignUpSchema, TGetByUserNameSchema, TLoginSchema, TResetPasswordSchema, TSignUpSchema } from "@/src/schema/auth.schema";
+import {
+  GetByUserNameSchema,
+  LoginSchema,
+  SignUpSchema,
+  TGetByUserNameSchema,
+  TLoginSchema,
+  TSignUpSchema,
+} from "@/src/schema/auth.schema";
 import { redirect } from "next/navigation";
 import { User } from "../generated/prisma/client";
 
@@ -22,14 +29,6 @@ type LoginResult = {
   };
 } & TLoginSchema;
 
-type ResetPasswordResult = {
-  errors: {
-    newPassword?: string[] | string | undefined;
-    confirmNewPassword?: string[] | string | undefined;
-  };
-} & TResetPasswordSchema;
-
-
 // ------- Functions -------
 
 /**
@@ -38,9 +37,8 @@ type ResetPasswordResult = {
  */
 export async function getUserSession(): Promise<User | null> {
   const session = await getSession();
-  return prisma.user.findUnique({where: {id: session?.userId}});
+  return prisma.user.findUnique({ where: { id: session?.userId } });
 }
-
 
 /**
  * Handles user sign-up process.
@@ -48,7 +46,10 @@ export async function getUserSession(): Promise<User | null> {
  * @param {FormData} formData - Form data containing user sign-up information.
  * @returns {Promise<SignUpResult>} Result of the sign-up process, including any errors.
  */
-export async function signUp(_prevState: SignUpResult, formData: FormData): Promise<SignUpResult> {
+export async function signUp(
+  _prevState: SignUpResult,
+  formData: FormData
+): Promise<SignUpResult> {
   const inputData = Object.fromEntries(formData) as TSignUpSchema;
   const result = SignUpSchema.safeParse(inputData);
   if (!result.success) {
@@ -58,14 +59,16 @@ export async function signUp(_prevState: SignUpResult, formData: FormData): Prom
     };
   }
 
-  const existingUser = await prisma.user.findUnique({where: {username: result.data.username}});
+  const existingUser = await prisma.user.findUnique({
+    where: { username: result.data.username },
+  });
   if (existingUser) {
     return {
       ...inputData,
       errors: {
-        username: "Username already taken, try another one"
-      }
-    }
+        username: "Username already taken, try another one",
+      },
+    };
   }
 
   const salt = generateSalt();
@@ -77,17 +80,16 @@ export async function signUp(_prevState: SignUpResult, formData: FormData): Prom
       ...result.data,
       salt,
       password: hashedPassword,
-      secretAnswer: hashedSecretAnswer
-    }
+      secretAnswer: hashedSecretAnswer,
+    },
   });
 
   await createSession({
     userId: user.id,
-  })
+  });
 
-  redirect("/chat")
+  redirect("/chat");
 }
-
 
 /**
  * Handles user login process.
@@ -95,41 +97,50 @@ export async function signUp(_prevState: SignUpResult, formData: FormData): Prom
  * @param {FormData} formData - Form data containing login credentials.
  * @returns {Promise<LoginResult>} Result of the login process, including any errors.
  */
-export async function login(prevState: LoginResult, formData: FormData): Promise<LoginResult> {
+export async function login(
+  prevState: LoginResult,
+  formData: FormData
+): Promise<LoginResult> {
   const inputData = Object.fromEntries(formData) as TLoginSchema;
   const result = LoginSchema.safeParse(inputData);
   if (!result.success) {
     return {
       ...inputData,
       errors: result.error.flatten().fieldErrors,
-    }
+    };
   }
-  const user = await prisma.user.findUnique({where: {username: result.data.username}});
+  const user = await prisma.user.findUnique({
+    where: { username: result.data.username },
+  });
   if (!user) {
     return {
       ...inputData,
       errors: {
         username: "Invalid username or password",
-        password: "Invalid username or password"
-      }
-    }
+        password: "Invalid username or password",
+      },
+    };
   }
-  const isPasswordCorrect = await compare(result.data.password, user.password, user.salt);
+  const isPasswordCorrect = await compare(
+    result.data.password,
+    user.password,
+    user.salt
+  );
   if (!isPasswordCorrect) {
     return {
       ...inputData,
       errors: {
         username: "Invalid username or password",
-        password: "Invalid username or password"
-      }
-    }
+        password: "Invalid username or password",
+      },
+    };
   }
 
   await createSession({
     userId: user.id,
-  })
+  });
 
-  redirect("/chat")
+  redirect("/chat");
 }
 
 /**
@@ -138,7 +149,7 @@ export async function login(prevState: LoginResult, formData: FormData): Promise
  */
 export async function logout() {
   await removeSession();
-  redirect("/auth")
+  redirect("/auth");
 }
 
 type TGetByUserNameResult = {
@@ -150,52 +161,73 @@ type TGetByUserNameResult = {
   secretAnswer?: string;
 } & Partial<TGetByUserNameSchema>;
 
-export async function checkUserName(usernameInput: string): Promise<TGetByUserNameResult> {
+export async function checkUserName(
+  usernameInput: string
+): Promise<TGetByUserNameResult> {
   try {
-    const inputData = {username: usernameInput} as TGetByUserNameSchema;
+    const inputData = { username: usernameInput } as TGetByUserNameSchema;
     const result = GetByUserNameSchema.safeParse(inputData);
     if (!result.success) {
       return {
         ...inputData,
         errors: {
-          username: result.error.flatten().fieldErrors.username?.[0] || "Invalid username"
+          username:
+            result.error.flatten().fieldErrors.username?.[0] ||
+            "Invalid username",
         },
-      }
+      };
     }
     const username = result.data.username;
-    const user = await prisma.user.findUniqueOrThrow({where: {
-      username,
-    }, select: {
-      id: true,
-      username: true,
-      secretQuestion: true,
-      salt: true,
-      secretAnswer: true,
-    }})
-    return {...user};
-  } catch(err) {
-    return {errors: {username: "User not found"}}
+    const user = await prisma.user.findUniqueOrThrow({
+      where: {
+        username,
+      },
+      select: {
+        id: true,
+        username: true,
+        secretQuestion: true,
+        salt: true,
+        secretAnswer: true,
+      },
+    });
+    return { ...user };
+  } catch (err) {
+    console.error("Check username error: ", err);
+    return { errors: { username: "User not found" } };
   }
 }
 
-export async function checkSecretAnswer(username: string, secretAnswer: string) {
-  const user = await prisma.user.findUnique({where: {username}});
+export async function checkSecretAnswer(
+  username: string,
+  secretAnswer: string
+) {
+  const user = await prisma.user.findUnique({ where: { username } });
   if (!user) {
-    return {errors: {user: "User not found"}, success: false};
+    return { errors: { user: "User not found" }, success: false };
   }
-  const isSecretAnswerCorrect = await compare(secretAnswer, user.secretAnswer, user.salt);
+  const isSecretAnswerCorrect = await compare(
+    secretAnswer,
+    user.secretAnswer,
+    user.salt
+  );
   if (!isSecretAnswerCorrect) {
-    return {errors: {secretAnswer: "Invalid secret answer"}, success: false};
+    return {
+      errors: { secretAnswer: "Invalid secret answer" },
+      success: false,
+    };
   }
-  return {success: true};
+  return { success: true };
 }
 
 export async function resetPassword(username: string, newPassword: string) {
-  const user = await prisma.user.findUnique({where: {username}});
+  const user = await prisma.user.findUnique({ where: { username } });
   if (!user) {
-    return {errors: {user: "User not found"}, success: false};
+    return { errors: { user: "User not found" }, success: false };
   }
   const hashedPassword = await hash(newPassword, user.salt);
-  await prisma.user.update({where: {username}, data: {password: hashedPassword}});
-  return {success: true};
+  await prisma.user.update({
+    where: { username },
+    data: { password: hashedPassword },
+  });
+  return { success: true };
 }
