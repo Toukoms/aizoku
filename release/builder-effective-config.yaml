@@ -5,16 +5,24 @@ appId: com.aizoku.app
 productName: AIZOKU
 files:
   - filter:
-      - dist/**/*
+      - .next/**/*
       - main.js
+      - package.json
+      - node_modules/**/*
+      - prisma/**/*
+extraResources:
+  - from: .next
+    to: .next
 linux:
   target:
     - AppImage
     - deb
+  category: Utility
 win:
   target:
     - nsis
 mac:
   target:
     - dmg
+  category: public.app-category.productivity
 electronVersion: 35.2.1

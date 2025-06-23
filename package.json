@@ -8,29 +8,46 @@
   "main": "main.js",
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && next build",
+    "build": "npm run db:deploy && next build",
     "start": "next start",
     "vercel-build": "prisma generate && prisma migrate deploy && next build",
-    "prisma:generate": "prisma generate",
+    "db:push": "prisma migrate dev",
+    "db:deploy": "prisma migrate deploy",
     "postinstall": "prisma generate",
-    "run:app": "node .next/standalone/server.js",
-    "run:desktop": "electron . --no-sandbox"
+    "start:standalone": "node .next/standalone/server.js",
+    "build:electron": "NODE_ENV=production npm run build && electron-builder",
+    "build:electron:linux": "NODE_ENV=production npm run build && electron-builder --linux",
+    "build:electron:windows": "NODE_ENV=production npm run build && electron-builder --windows",
+    "build:electron:mac": "NODE_ENV=production npm run build && electron-builder --mac",
+    "dist": "npm run build && electron-builder --publish=never",
+    "electron:dev": "NODE_ENV=development electron . --no-sandbox",
+    "electron:prod": "NODE_ENV=production npm run build && electron . --no-sandbox"
   },
   "build": {
     "appId": "com.aizoku.app",
     "productName": "AIZOKU",
     "files": [
-      "dist/**/*",
-      "main.js"
+      ".next/**/*",
+      "main.js",
+      "package.json",
+      "node_modules/**/*",
+      "prisma/**/*"
     ],
     "directories": {
       "output": "release"
     },
+    "extraResources": [
+      {
+        "from": ".next",
+        "to": ".next"
+      }
+    ],
     "linux": {
       "target": [
         "AppImage",
         "deb"
-      ]
+      ],
+      "category": "Utility"
     },
     "win": {
       "target": [
@@ -40,7 +57,8 @@
     "mac": {
       "target": [
         "dmg"
-      ]
+      ],
+      "category": "public.app-category.productivity"
     }
   },
   "dependencies": {

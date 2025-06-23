@@ -1,39 +1,238 @@
-name: Build and Release
+name: Release and Build
 
 on:
   push:
-    tags:
-      - 'v*'
+    branches:
+      - main
 
 jobs:
-  release:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-
+  create-release:
+    runs-on: ubuntu-latest
+    outputs:
+      release_id: ${{ steps.create_release.outputs.id }}
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+      tag_name: ${{ steps.create_tag.outputs.tag_name }}
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
-          node-version: 18
+          fetch-depth: 0
 
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build app
+      - name: Get package version
+        id: package_version
         run: |
-          npm run build
-          npx electron-builder --${{ matrix.os == 'windows-latest' && 'win' || matrix.os == 'macos-latest' && 'mac' || 'linux' }} --publish always
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
 
-      - name: Upload release artifacts
-        uses: softprops/action-gh-release@v1
-        with:
-          files: |
-            release/**/*
+      - name: Create tag
+        id: create_tag
+        run: |
+          TAG_NAME="aizoku_v${{ steps.package_version.outputs.version }}"
+          echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
+          git tag $TAG_NAME
+          git push origin $TAG_NAME
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.create_tag.outputs.tag_name }}
+          release_name: "AIZOKU ${{ steps.package_version.outputs.version }}"
+          body: |
+            ## AIZOKU Release ${{ steps.package_version.outputs.version }}
 
+            ### What's New
+            - Automated release from main branch
+            - Built with latest dependencies
+
+            ### Downloads
+            - **Linux**: AppImage and .deb packages
+            - **Windows**: NSIS installer
+            - **macOS**: DMG package
+
+            ### Installation
+            1. Download the appropriate package for your platform
+            2. Install according to your platform's standard procedure
+            3. Launch AIZOKU and enjoy offline AI!
+          draft: false
+          prerelease: false
+
+  build-web:
+    needs: create-release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Next.js app
+        run: npm run build
+
+      - name: Create web build archive
+        run: |
+          tar -czf aizoku-web-${{ needs.create-release.outputs.tag_name }}.tar.gz .next
+
+      - name: Upload web build to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: ./aizoku-web-${{ needs.create-release.outputs.tag_name }}.tar.gz
+          asset_name: aizoku-web-${{ needs.create-release.outputs.tag_name }}.tar.gz
+          asset_content_type: application/gzip
+
+  build-linux:
+    needs: create-release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Next.js app
+        run: npm run build
+
+      - name: Build Electron app for Linux
+        run: npx electron-builder --linux
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Find and upload Linux AppImage
+        run: |
+          APPIMAGE_FILE=$(find ./release -name "*.AppImage" -type f | head -1)
+          if [ -n "$APPIMAGE_FILE" ]; then
+            echo "APPIMAGE_PATH=$APPIMAGE_FILE" >> $GITHUB_ENV
+          fi
+
+      - name: Upload Linux AppImage
+        if: env.APPIMAGE_PATH
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: ${{ env.APPIMAGE_PATH }}
+          asset_name: AIZOKU-${{ needs.create-release.outputs.tag_name }}.AppImage
+          asset_content_type: application/octet-stream
+
+      - name: Find and upload Linux DEB
+        run: |
+          DEB_FILE=$(find ./release -name "*.deb" -type f | head -1)
+          if [ -n "$DEB_FILE" ]; then
+            echo "DEB_PATH=$DEB_FILE" >> $GITHUB_ENV
+          fi
+
+      - name: Upload Linux DEB
+        if: env.DEB_PATH
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: ${{ env.DEB_PATH }}
+          asset_name: aizoku-${{ needs.create-release.outputs.tag_name }}.deb
+          asset_content_type: application/vnd.debian.binary-package
+
+  build-windows:
+    needs: create-release
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Next.js app
+        run: npm run build
+
+      - name: Build Electron app for Windows
+        run: npx electron-builder --windows
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Find and upload Windows installer
+        run: |
+          $EXE_FILE = Get-ChildItem -Path "./release" -Filter "*.exe" | Select-Object -First 1
+          if ($EXE_FILE) {
+            echo "EXE_PATH=$($EXE_FILE.FullName)" >> $env:GITHUB_ENV
+          }
+        shell: powershell
+
+      - name: Upload Windows installer
+        if: env.EXE_PATH
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: ${{ env.EXE_PATH }}
+          asset_name: AIZOKU-Setup-${{ needs.create-release.outputs.tag_name }}.exe
+          asset_content_type: application/octet-stream
+
+  build-macos:
+    needs: create-release
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Next.js app
+        run: npm run build
+
+      - name: Build Electron app for macOS
+        run: npx electron-builder --mac
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Find and upload macOS DMG
+        run: |
+          DMG_FILE=$(find ./release -name "*.dmg" -type f | head -1)
+          if [ -n "$DMG_FILE" ]; then
+            echo "DMG_PATH=$DMG_FILE" >> $GITHUB_ENV
+          fi
+
+      - name: Upload macOS DMG
+        if: env.DMG_PATH
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create-release.outputs.upload_url }}
+          asset_path: ${{ env.DMG_PATH }}
+          asset_name: AIZOKU-${{ needs.create-release.outputs.tag_name }}.dmg
+          asset_content_type: application/octet-stream
